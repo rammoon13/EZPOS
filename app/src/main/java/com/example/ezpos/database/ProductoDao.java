@@ -5,6 +5,7 @@ import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
 import androidx.room.Update;
+import androidx.lifecycle.LiveData;
 
 import com.example.ezpos.model.Producto;
 
@@ -23,7 +24,7 @@ public interface ProductoDao {
     void eliminarProducto(Producto producto);
 
     @Query("SELECT * FROM Producto ORDER BY nombre ASC")
-    List<Producto> obtenerTodos();
+    LiveData<List<Producto>> obtenerTodos();
 
     @Query("SELECT * FROM Producto WHERE id = :id")
     Producto obtenerPorId(int id);
