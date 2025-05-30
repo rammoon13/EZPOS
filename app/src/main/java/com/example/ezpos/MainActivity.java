@@ -1,39 +1,71 @@
 package com.example.ezpos;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
+
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
+
+    private EditText etUsuario, etPassword, etAsociacion;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_login); // Este es el layout del login
 
-        BottomNavigationView bottomNav = findViewById(R.id.bottom_nav);
-        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new PedidosFragment()).commit();
+        // Comprobamos si ya hay una sesión activa
+        Usuario sesion = JsonUtils.cargarSesion(this);
+        if (sesion != null) {
+            startActivity(new Intent(MainActivity.this, HomeActivity.class));
+            finish();
+            return;
+        }
 
-        bottomNav.setOnItemSelectedListener(item -> {
-            Fragment selectedFragment = null;
+        // Referencias UI
+        etUsuario = findViewById(R.id.etUsuario);
+        etPassword = findViewById(R.id.etPassword);
+        etAsociacion = findViewById(R.id.etAsociacion);
+        Button btnLogin = findViewById(R.id.btnLogin);
+        TextView tvIrRegistro = findViewById(R.id.tvIrRegistro);
 
-            if (item.getItemId() == R.id.nav_pedidos) {
-                selectedFragment = new PedidosFragment();
-            } else if (item.getItemId() == R.id.nav_inventario) {
-                selectedFragment = new InventarioFragment();
-            } else if (item.getItemId() == R.id.nav_historial) {
-                selectedFragment = new HistorialFragment();
+        // Botón de login
+        btnLogin.setOnClickListener(v -> {
+            String usuario = etUsuario.getText().toString().trim();
+            String password = etPassword.getText().toString().trim();
+            String asociacion = etAsociacion.getText().toString().trim();
+
+            if (usuario.isEmpty() || password.isEmpty() || asociacion.isEmpty()) {
+                Toast.makeText(this, "Rellena todos los campos", Toast.LENGTH_SHORT).show();
+                return;
             }
 
-            if (selectedFragment != null) {
-                getSupportFragmentManager()
-                        .beginTransaction()
-                        .replace(R.id.fragment_container, selectedFragment)
-                        .commit();
-                return true;
+            List<Usuario> listaUsuarios = JsonUtils.cargarUsuarios(this);
+            for (Usuario u : listaUsuarios) {
+                if (u.nombreUsuario.equals(usuario)
+                        && u.contraseña.equals(password)
+                        && u.nombreAsociacion.equals(asociacion)) {
+                    // Login correcto
+                    JsonUtils.guardarSesion(this, u);
+                    Toast.makeText(this, "Sesión iniciada", Toast.LENGTH_SHORT).show();
+                    startActivity(new Intent(MainActivity.this, HomeActivity.class));
+                    finish();
+                    return;
+                }
             }
 
-            return false;
+            Toast.makeText(this, "Credenciales incorrectas", Toast.LENGTH_SHORT).show();
+        });
+
+        // Link a registro
+        tvIrRegistro.setOnClickListener(v -> {
+            startActivity(new Intent(MainActivity.this, RegistroActivity.class));
         });
     }
 }

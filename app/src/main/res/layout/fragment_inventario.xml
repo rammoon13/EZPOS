@@ -1,22 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="?attr/colorBackground"
     android:orientation="vertical"
     android:padding="16dp">
 
-    <!-- Título -->
-    <TextView
-        android:id="@+id/titulo_inventario"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="EZPOS"
-        android:textAlignment="center"
-        android:textStyle="bold"
-        android:textSize="24sp"
-        android:paddingBottom="4dp" />
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginBottom="4dp">
 
-    <!-- Subtítulo -->
+        <ImageButton
+            android:id="@+id/btnCerrarSesion"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@android:color/transparent"
+            android:padding="4dp"
+            android:contentDescription="Cerrar sesión"
+            android:src="@drawable/baseline_logout_24"
+            android:tint="?attr/colorOnBackground" />
+
+        <TextView
+            android:id="@+id/titulo_inventario"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="EZPOS      "
+            android:textAlignment="center"
+            android:textStyle="bold"
+            android:textSize="24sp"
+            android:textColor="?attr/colorOnBackground" />
+    </LinearLayout>
+
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -24,9 +43,9 @@
         android:textAlignment="center"
         android:textStyle="bold"
         android:textSize="18sp"
-        android:paddingBottom="12dp" />
+        android:paddingBottom="12dp"
+        android:textColor="?attr/colorOnBackground" />
 
-    <!-- Botón añadir producto -->
     <Button
         android:id="@+id/btnAgregarProducto"
         android:layout_width="match_parent"
@@ -34,18 +53,23 @@
         android:text="AÑADIR PRODUCTO"
         android:layout_marginBottom="12dp" />
 
-    <!-- Campo de búsqueda -->
-    <EditText
-        android:id="@+id/buscarProducto"
+    <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Buscar producto"
-        android:drawableStart="@android:drawable/ic_menu_search"
-        android:padding="10dp"
-        android:background="@android:drawable/editbox_background_normal"
-        android:layout_marginBottom="12dp" />
+        app:endIconMode="clear_text"
+        android:layout_marginBottom="12dp">
 
-    <!-- Scroll de productos -->
+        <EditText
+            android:id="@+id/buscarHistorial"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Buscar producto"
+            android:drawableStart="@android:drawable/ic_menu_search"
+            android:padding="10dp"
+            android:textColor="?attr/colorOnBackground"
+            android:textColorHint="?attr/colorOnBackground" />
+    </com.google.android.material.textfield.TextInputLayout>
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -58,43 +82,7 @@
             android:orientation="vertical">
 
             <!-- Producto de ejemplo -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:background="#EEEEEE"
-                android:padding="12dp"
-                android:layout_marginBottom="8dp">
-
-                <ImageView
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:src="@drawable/baseline_shopping_cart_24"
-                    android:layout_marginEnd="12dp" />
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="PRODUCTO 1"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Cantidad: 150" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Precio: 2€" />
-                </LinearLayout>
-            </LinearLayout>
+            <!-- Puedes duplicar o inflar dinámicamente estos bloques -->
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -120,20 +108,22 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="PRODUCTO 1"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        android:textColor="#000000" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Cantidad: 150" />
+                        android:text="Cantidad: 150"
+                        android:textColor="#000000" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Precio: 2€" />
+                        android:text="Precio: 2€"
+                        android:textColor="#000000" />
                 </LinearLayout>
             </LinearLayout>
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -158,20 +148,22 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="PRODUCTO 1"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        android:textColor="#000000" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Cantidad: 150" />
+                        android:text="Cantidad: 150"
+                        android:textColor="#000000" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Precio: 2€" />
+                        android:text="Precio: 2€"
+                        android:textColor="#000000" />
                 </LinearLayout>
             </LinearLayout>
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -196,20 +188,22 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="PRODUCTO 1"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        android:textColor="#000000" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Cantidad: 150" />
+                        android:text="Cantidad: 150"
+                        android:textColor="#000000" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Precio: 2€" />
+                        android:text="Precio: 2€"
+                        android:textColor="#000000" />
                 </LinearLayout>
             </LinearLayout>
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -234,20 +228,22 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="PRODUCTO 1"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        android:textColor="#000000" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Cantidad: 150" />
+                        android:text="Cantidad: 150"
+                        android:textColor="#000000" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Precio: 2€" />
+                        android:text="Precio: 2€"
+                        android:textColor="#000000" />
                 </LinearLayout>
             </LinearLayout>
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -272,20 +268,22 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="PRODUCTO 1"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        android:textColor="#000000" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Cantidad: 150" />
+                        android:text="Cantidad: 150"
+                        android:textColor="#000000" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Precio: 2€" />
+                        android:text="Precio: 2€"
+                        android:textColor="#000000" />
                 </LinearLayout>
             </LinearLayout>
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -310,20 +308,104 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="PRODUCTO 1"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        android:textColor="#000000" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Cantidad: 150" />
+                        android:text="Cantidad: 150"
+                        android:textColor="#000000" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Precio: 2€" />
+                        android:text="Precio: 2€"
+                        android:textColor="#000000" />
+                </LinearLayout>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:background="#EEEEEE"
+                android:padding="12dp"
+                android:layout_marginBottom="8dp">
+
+                <ImageView
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:src="@drawable/baseline_shopping_cart_24"
+                    android:layout_marginEnd="12dp" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="PRODUCTO 1"
+                        android:textStyle="bold"
+                        android:textColor="#000000" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Cantidad: 150"
+                        android:textColor="#000000" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Precio: 2€"
+                        android:textColor="#000000" />
+                </LinearLayout>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:background="#EEEEEE"
+                android:padding="12dp"
+                android:layout_marginBottom="8dp">
+
+                <ImageView
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:src="@drawable/baseline_shopping_cart_24"
+                    android:layout_marginEnd="12dp" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="PRODUCTO 1"
+                        android:textStyle="bold"
+                        android:textColor="#000000" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Cantidad: 150"
+                        android:textColor="#000000" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Precio: 2€"
+                        android:textColor="#000000" />
                 </LinearLayout>
             </LinearLayout>
 
+            <!-- Más productos aquí -->
         </LinearLayout>
     </ScrollView>
 </LinearLayout>
