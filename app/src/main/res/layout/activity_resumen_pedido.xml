@@ -2,7 +2,9 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
+    android:gravity="center"
     android:padding="16dp">
 
     <!-- Título -->
@@ -238,7 +240,7 @@
                 android:padding="4dp">
 
                 <TextView
-                    android:layout_width="0dp"
+                    android:layout_width="358dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="Producto 1" />
@@ -299,6 +301,7 @@
             android:layout_weight="1"
             android:layout_height="wrap_content"
             android:text="TOTAL:"
+            android:textSize="30sp"
             android:textStyle="bold" />
 
         <TextView
@@ -306,6 +309,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="12.5€"
+            android:textSize="30sp"
             android:textStyle="bold" />
     </LinearLayout>
 
@@ -328,13 +332,19 @@
                 android:layout_height="wrap_content"
                 android:text="Pagado:" />
 
-            <EditText
-                android:id="@+id/etPagado"
+            <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="numberDecimal"
-                android:gravity="center"
-                android:background="@android:drawable/editbox_background_normal" />
+                android:layout_marginBottom="12dp">
+
+                <EditText
+                    android:id="@+id/etPagado"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="numberDecimal"
+                    android:gravity="center"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
         </LinearLayout>
 
         <Space android:layout_width="12dp" android:layout_height="wrap_content"/>
@@ -350,13 +360,23 @@
                 android:layout_height="wrap_content"
                 android:text="A Devolver:" />
 
-            <EditText
-                android:id="@+id/etDevolver"
+            <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="numberDecimal"
-                android:gravity="center"
-                android:background="@android:drawable/editbox_background_normal" />
+                android:layout_marginBottom="12dp">
+
+                <EditText
+                    android:id="@+id/etDevolver"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="numberDecimal"
+                    android:gravity="center"
+                    android:focusable="false"
+                    android:clickable="false"
+                    android:cursorVisible="false"
+                    android:longClickable="false"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
         </LinearLayout>
     </LinearLayout>
 

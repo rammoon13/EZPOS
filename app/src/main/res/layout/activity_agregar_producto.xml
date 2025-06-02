@@ -51,14 +51,20 @@
                 android:layout_marginBottom="16dp"/>
 
             <!-- Nombre del producto -->
-            <EditText
-                android:id="@+id/etNombreProducto"
+            <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Nombre del producto"
-                android:textColor="?attr/colorOnBackground"
-                android:textColorHint="?attr/colorOnBackground"
-                android:layout_marginBottom="12dp"/>
+                app:endIconMode="clear_text">
+
+                <EditText
+                    android:id="@+id/etNombreProducto"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Nombre del producto"
+                    android:textColor="?attr/colorOnBackground"
+                    android:textColorHint="?attr/colorOnBackground"
+                    android:layout_marginBottom="12dp"/>
+            </com.google.android.material.textfield.TextInputLayout>
 
             <!-- Cantidad y unidad -->
             <LinearLayout
@@ -67,49 +73,56 @@
                 android:orientation="horizontal"
                 android:layout_marginBottom="12dp">
 
-                <EditText
-                    android:id="@+id/etCantidad"
-                    android:layout_width="0dp"
-                    android:layout_weight="2"
-                    android:layout_height="wrap_content"
-                    android:hint="Cantidad"
-                    android:inputType="number"
-                    android:textColor="?attr/colorOnBackground"
-                    android:textColorHint="?attr/colorOnBackground" />
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:endIconMode="clear_text">
 
-                <Space android:layout_width="8dp" android:layout_height="wrap_content"/>
-
-                <TextView
-                    android:id="@+id/etUnidad"
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="wrap_content"
-                    android:text="uds"
-                    android:textColor="?attr/colorOnBackground" />
+                    <EditText
+                        android:id="@+id/etCantidad"
+                        android:layout_width="match_parent"
+                        android:layout_weight="3"
+                        android:layout_height="wrap_content"
+                        android:hint="Cantidad (uds)"
+                        android:inputType="number"
+                        android:textColor="?attr/colorOnBackground"
+                        android:textColorHint="?attr/colorOnBackground" />
+                </com.google.android.material.textfield.TextInputLayout>
             </LinearLayout>
 
             <!-- Precio -->
-            <EditText
-                android:id="@+id/etPrecio"
+            <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Precio"
-                android:inputType="numberDecimal"
-                android:textColor="?attr/colorOnBackground"
-                android:textColorHint="?attr/colorOnBackground"
-                android:layout_marginBottom="12dp" />
+                app:endIconMode="clear_text">
+
+                <EditText
+                    android:id="@+id/etPrecio"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Precio"
+                    android:inputType="numberDecimal"
+                    android:textColor="?attr/colorOnBackground"
+                    android:textColorHint="?attr/colorOnBackground"
+                    android:layout_marginBottom="12dp" />
+            </com.google.android.material.textfield.TextInputLayout>
 
             <!-- Descripción -->
-            <EditText
-                android:id="@+id/etDescripcion"
+            <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="100dp"
-                android:hint="Descripción del producto"
-                android:gravity="top"
-                android:textColor="#000000"
-                android:textColorHint="#000000"
-                android:background="@android:drawable/editbox_background_normal"
-                android:layout_marginBottom="20dp" />
+                app:endIconMode="clear_text">
+
+                <EditText
+                    android:id="@+id/etDescripcion"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:hint="Descripción del producto (opcional)"
+                    android:gravity="top"
+                    android:textColor="?attr/colorOnBackground"
+                    android:textColorHint="?attr/colorOnBackground"
+                    android:layout_marginBottom="20dp" />
+            </com.google.android.material.textfield.TextInputLayout>
 
             <!-- Botones -->
             <LinearLayout
