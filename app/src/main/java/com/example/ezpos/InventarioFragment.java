@@ -4,10 +4,13 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 
@@ -15,7 +18,14 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class InventarioFragment extends Fragment {
+
+    private LinearLayout contenedor;
+    private EditText buscador;
+    private List<Producto> listaProductos = new ArrayList<>();
 
     @Nullable
     @Override
@@ -37,6 +47,22 @@ public class InventarioFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        contenedor = view.findViewById(R.id.listaInventario);
+        buscador = view.findViewById(R.id.buscarHistorial);
+
+        buscador.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                filtrarProductos(s.toString());
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {}
+        });
+
         ImageButton btnCerrarSesion = view.findViewById(R.id.btnCerrarSesion);
         btnCerrarSesion.setOnClickListener(v -> {
             JsonUtils.cerrarSesion(requireContext());
@@ -53,8 +79,7 @@ public class InventarioFragment extends Fragment {
     }
 
     private void mostrarProductos() {
-        LinearLayout contenedor = requireView().findViewById(R.id.listaInventario);
-        contenedor.removeAllViews();
+        listaProductos.clear();
 
         EZPOSSQLiteHelper dbHelper = new EZPOSSQLiteHelper(requireContext());
         SQLiteDatabase db = dbHelper.getReadableDatabase();
@@ -66,12 +91,24 @@ public class InventarioFragment extends Fragment {
             int cantidad = cursor.getInt(cursor.getColumnIndexOrThrow("cantidad"));
             double precio = cursor.getDouble(cursor.getColumnIndexOrThrow("precio"));
 
-            Producto producto = new Producto(id, nombre, cantidad, precio);
-            View card = ProductoCardViewBuilder.crear(requireContext(), producto);
-            contenedor.addView(card);
+            listaProductos.add(new Producto(id, nombre, cantidad, precio));
         }
 
         cursor.close();
         db.close();
+
+        filtrarProductos(buscador != null ? buscador.getText().toString() : "");
+    }
+
+    private void filtrarProductos(String texto) {
+        contenedor.removeAllViews();
+        String filtro = texto.toLowerCase();
+
+        for (Producto producto : listaProductos) {
+            if (producto.getNombre().toLowerCase().contains(filtro)) {
+                View card = ProductoCardViewBuilder.crear(requireContext(), producto);
+                contenedor.addView(card);
+            }
+        }
     }
 }
