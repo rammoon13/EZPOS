@@ -1,12 +1,15 @@
 package com.example.ezpos;
 
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -21,16 +24,15 @@ public class InventarioFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_inventario, container, false);
 
-        // Referencia al botón "AÑADIR PRODUCTO"
         Button btnAgregarProducto = view.findViewById(R.id.btnAgregarProducto);
         btnAgregarProducto.setOnClickListener(v -> {
-            // Lanzar AgregarProductoActivity
             Intent intent = new Intent(getActivity(), AgregarProductoActivity.class);
             startActivity(intent);
         });
 
         return view;
     }
+
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -38,10 +40,38 @@ public class InventarioFragment extends Fragment {
         ImageButton btnCerrarSesion = view.findViewById(R.id.btnCerrarSesion);
         btnCerrarSesion.setOnClickListener(v -> {
             JsonUtils.cerrarSesion(requireContext());
-            Intent intent = new Intent(requireContext(), MainActivity.class); // Login
+            Intent intent = new Intent(requireContext(), MainActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
         });
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        mostrarProductos();
+    }
+
+    private void mostrarProductos() {
+        LinearLayout contenedor = requireView().findViewById(R.id.listaInventario);
+        contenedor.removeAllViews();
+
+        EZPOSSQLiteHelper dbHelper = new EZPOSSQLiteHelper(requireContext());
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+
+        Cursor cursor = db.rawQuery("SELECT * FROM productos", null);
+        while (cursor.moveToNext()) {
+            int id = cursor.getInt(cursor.getColumnIndexOrThrow("id"));
+            String nombre = cursor.getString(cursor.getColumnIndexOrThrow("nombre"));
+            int cantidad = cursor.getInt(cursor.getColumnIndexOrThrow("cantidad"));
+            double precio = cursor.getDouble(cursor.getColumnIndexOrThrow("precio"));
+
+            Producto producto = new Producto(id, nombre, cantidad, precio);
+            View card = ProductoCardViewBuilder.crear(requireContext(), producto);
+            contenedor.addView(card);
+        }
+
+        cursor.close();
+        db.close();
+    }
 }
