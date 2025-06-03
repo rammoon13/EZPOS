@@ -44,6 +44,7 @@ public class AgregarProductoActivity extends AppCompatActivity {
             etNombre.setText(intent.getStringExtra("nombre"));
             etCantidad.setText(String.valueOf(intent.getIntExtra("cantidad", 0)));
             etPrecio.setText(String.valueOf(intent.getDoubleExtra("precio", 0.0)));
+            etDescripcion.setText(intent.getStringExtra("descripcion"));
             btnAgregar.setText("Guardar cambios");
         }
     }

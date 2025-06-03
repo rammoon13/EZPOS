@@ -1,31 +1,177 @@
 package com.example.ezpos;
 
+import android.content.ContentValues;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.widget.Button;
-import android.widget.Toast;
-
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.widget.*;
 import androidx.appcompat.app.AppCompatActivity;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.text.SimpleDateFormat;
+import java.util.*;
+
 public class ResumenPedidoActivity extends AppCompatActivity {
+
+    TextView tvNombreCliente, tvFecha, tvTotal;
+    EditText etPagado, etDevolver;
+    LinearLayout listaResumenProductos;
+    double totalPedido = 0;
+    String nombreCliente;
+    String fechaHora;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_resumen_pedido);
 
-        // Botón "Atrás"
+        tvNombreCliente = findViewById(R.id.tvNombreCliente);
+        tvFecha = findViewById(R.id.tvFecha);
+        tvTotal = findViewById(R.id.tvTotal);
+        etPagado = findViewById(R.id.etPagado);
+        etDevolver = findViewById(R.id.etDevolver);
+        listaResumenProductos = findViewById(R.id.listaResumenProductos);
+
+        nombreCliente = getIntent().getStringExtra("cliente");
+        fechaHora = getIntent().getStringExtra("fecha");
+
+        tvNombreCliente.setText(nombreCliente);
+        tvFecha.setText(fechaHora);
+
+        mostrarProductosSeleccionados();
+
+        // Actualiza el cambio automáticamente al escribir
+        etPagado.addTextChangedListener(new TextWatcher() {
+            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override public void onTextChanged(CharSequence s, int start, int before, int count) {
+                calcularCambio();
+            }
+            @Override public void afterTextChanged(Editable s) {}
+        });
+
         Button btnAtras = findViewById(R.id.btnAtras);
         btnAtras.setOnClickListener(v -> finish());
 
-        // Botón "Confirmar pedido"
         Button btnConfirmar = findViewById(R.id.btnConfirmar);
-        btnConfirmar.setOnClickListener(v -> {
-            Toast.makeText(ResumenPedidoActivity.this, "Pedido confirmado con éxito", Toast.LENGTH_SHORT).show();
+        btnConfirmar.setOnClickListener(v -> confirmarPedido());
+    }
 
-            Intent intent = new Intent(ResumenPedidoActivity.this, MainActivity.class);
+    private void mostrarProductosSeleccionados() {
+        listaResumenProductos.removeAllViews();
+        totalPedido = 0;
+
+        try {
+            JSONArray productos = new JSONArray(getIntent().getStringExtra("productos_seleccionados"));
+            for (int i = 0; i < productos.length(); i++) {
+                JSONObject producto = productos.getJSONObject(i);
+                String nombre = producto.getString("nombre");
+                double precio = producto.getDouble("precio");
+
+                LinearLayout fila = new LinearLayout(this);
+                fila.setOrientation(LinearLayout.HORIZONTAL);
+                fila.setPadding(4, 4, 4, 4);
+
+                TextView nombreTxt = new TextView(this);
+                nombreTxt.setLayoutParams(new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1));
+                nombreTxt.setText(nombre);
+
+                TextView precioTxt = new TextView(this);
+                precioTxt.setText(String.format(Locale.getDefault(), "%.2f€", precio));
+
+                fila.addView(nombreTxt);
+                fila.addView(precioTxt);
+
+                listaResumenProductos.addView(fila);
+                totalPedido += precio;
+            }
+
+            tvTotal.setText(String.format(Locale.getDefault(), "%.2f€", totalPedido));
+        } catch (JSONException e) {
+            Toast.makeText(this, "Error al leer productos", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void calcularCambio() {
+        String pagadoStr = etPagado.getText().toString().trim();
+        if (!pagadoStr.isEmpty()) {
+            try {
+                double pagado = Double.parseDouble(pagadoStr);
+                double devolver = pagado - totalPedido;
+                etDevolver.setText(String.format(Locale.getDefault(), "%.2f", devolver));
+            } catch (NumberFormatException e) {
+                etDevolver.setText("0.00");
+            }
+        } else {
+            etDevolver.setText("0.00");
+        }
+    }
+
+    private void confirmarPedido() {
+        try {
+            JSONArray productos = new JSONArray(getIntent().getStringExtra("productos_seleccionados"));
+
+            String pagadoStr = etPagado.getText().toString().trim();
+            if (pagadoStr.isEmpty()) {
+                Toast.makeText(this, "Introduce el importe pagado", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            double pagado;
+            try {
+                pagado = Double.parseDouble(pagadoStr);
+            } catch (NumberFormatException e) {
+                Toast.makeText(this, "El importe pagado no es válido", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            if (pagado < totalPedido) {
+                Toast.makeText(this, "El importe es insuficiente", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            double devolver = pagado - totalPedido;
+
+            EZPOSSQLiteHelper dbHelper = new EZPOSSQLiteHelper(this);
+            SQLiteDatabase db = dbHelper.getWritableDatabase();
+
+            ContentValues pedidoValues = new ContentValues();
+            pedidoValues.put("nombre_cliente", nombreCliente);
+            pedidoValues.put("fecha_hora", fechaHora);
+            pedidoValues.put("total", totalPedido);
+            pedidoValues.put("pagado", pagado);
+            pedidoValues.put("devolver", devolver);
+
+            long idPedido = db.insert("pedidos", null, pedidoValues);
+
+            for (int i = 0; i < productos.length(); i++) {
+                JSONObject producto = productos.getJSONObject(i);
+                int idProducto = producto.getInt("id");
+                double precio = producto.getDouble("precio");
+
+                ContentValues detalle = new ContentValues();
+                detalle.put("id_pedido", idPedido);
+                detalle.put("id_producto", idProducto);
+                detalle.put("cantidad", 1);
+                detalle.put("precio_unitario", precio);
+
+                db.insert("detalle_pedido", null, detalle);
+            }
+
+            db.close();
+
+            Toast.makeText(this, "Pedido confirmado con éxito", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(this, MainActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
             startActivity(intent);
             finish();
-        });
+
+        } catch (JSONException e) {
+            Toast.makeText(this, "Error al procesar el pedido", Toast.LENGTH_SHORT).show();
+        }
     }
 }

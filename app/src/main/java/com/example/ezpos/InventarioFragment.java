@@ -90,8 +90,9 @@ public class InventarioFragment extends Fragment {
             String nombre = cursor.getString(cursor.getColumnIndexOrThrow("nombre"));
             int cantidad = cursor.getInt(cursor.getColumnIndexOrThrow("cantidad"));
             double precio = cursor.getDouble(cursor.getColumnIndexOrThrow("precio"));
+            String descripcion = cursor.getString(cursor.getColumnIndexOrThrow("descripcion"));
 
-            listaProductos.add(new Producto(id, nombre, cantidad, precio));
+            listaProductos.add(new Producto(id, nombre, cantidad, precio, descripcion));
         }
 
         cursor.close();

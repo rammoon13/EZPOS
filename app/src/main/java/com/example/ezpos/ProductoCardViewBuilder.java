@@ -36,6 +36,7 @@ public class ProductoCardViewBuilder {
                     intent.putExtra("nombre", producto.getNombre());
                     intent.putExtra("cantidad", producto.getCantidad());
                     intent.putExtra("precio", producto.getPrecio());
+                    intent.putExtra("descripcion", producto.getDescripcion());
                     context.startActivity(intent);
                     return true;
                 } else if (item.getItemId() == R.id.menu_eliminar) {

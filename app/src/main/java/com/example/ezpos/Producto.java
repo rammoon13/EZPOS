@@ -5,18 +5,21 @@ public class Producto {
     private String nombre;
     private int cantidad;
     private double precio;
+    private String descripcion;
 
-    public Producto(int id, String nombre, int cantidad, double precio) {
+    public Producto(int id, String nombre, int cantidad, double precio, String descripcion) {
         this.id = id;
         this.nombre = nombre;
         this.cantidad = cantidad;
         this.precio = precio;
+        this.descripcion = descripcion;
     }
 
-    public Producto(String nombre, int cantidad, double precio) {
+    public Producto(String nombre, int cantidad, double precio, String descripcion) {
         this.nombre = nombre;
         this.cantidad = cantidad;
         this.precio = precio;
+        this.descripcion = descripcion;
     }
 
     // Getters y setters
@@ -31,4 +34,7 @@ public class Producto {
 
     public double getPrecio() { return precio; }
     public void setPrecio(double precio) { this.precio = precio; }
+
+    public String getDescripcion() { return descripcion; }
+    public void setDescripcion(String descripcion) { this.descripcion = descripcion; }
 }
