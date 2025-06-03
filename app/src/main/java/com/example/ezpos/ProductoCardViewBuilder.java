@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -19,10 +20,17 @@ public class ProductoCardViewBuilder {
         TextView nombre = view.findViewById(R.id.tvNombreProducto);
         TextView cantidad = view.findViewById(R.id.tvCantidadProducto);
         TextView precio = view.findViewById(R.id.tvPrecioProducto);
+        ImageView image = view.findViewById(R.id.imgProducto);
 
         nombre.setText(producto.getNombre());
         cantidad.setText("Cantidad: " + producto.getCantidad());
         precio.setText("Precio: " + producto.getPrecio() + "€");
+        if (producto.getImagen() != null && !producto.getImagen().isEmpty()) {
+            int resId = context.getResources().getIdentifier(producto.getImagen(), "drawable", context.getPackageName());
+            if (resId != 0) {
+                image.setImageResource(resId);
+            }
+        }
 
         // Menú contextual al mantener pulsado
         view.setOnLongClickListener(v -> {

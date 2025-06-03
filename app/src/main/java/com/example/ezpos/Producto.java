@@ -6,20 +6,23 @@ public class Producto {
     private int cantidad;
     private double precio;
     private String descripcion;
+    private String imagen;
 
-    public Producto(int id, String nombre, int cantidad, double precio, String descripcion) {
+    public Producto(int id, String nombre, int cantidad, double precio, String descripcion, String imagen) {
         this.id = id;
         this.nombre = nombre;
         this.cantidad = cantidad;
         this.precio = precio;
         this.descripcion = descripcion;
+        this.imagen = imagen;
     }
 
-    public Producto(String nombre, int cantidad, double precio, String descripcion) {
+    public Producto(String nombre, int cantidad, double precio, String descripcion, String imagen) {
         this.nombre = nombre;
         this.cantidad = cantidad;
         this.precio = precio;
         this.descripcion = descripcion;
+        this.imagen = imagen;
     }
 
     // Getters y setters
@@ -37,4 +40,7 @@ public class Producto {
 
     public String getDescripcion() { return descripcion; }
     public void setDescripcion(String descripcion) { this.descripcion = descripcion; }
+
+    public String getImagen() { return imagen; }
+    public void setImagen(String imagen) { this.imagen = imagen; }
 }

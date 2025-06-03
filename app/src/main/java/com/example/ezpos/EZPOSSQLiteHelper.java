@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class EZPOSSQLiteHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "ezpos.db";
-    private static final int DATABASE_VERSION = 6; // Aumenta si ya existe una base antigua
+    private static final int DATABASE_VERSION = 7; // Aumenta si ya existe una base antigua
 
     public EZPOSSQLiteHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -20,7 +20,8 @@ public class EZPOSSQLiteHelper extends SQLiteOpenHelper {
                 "nombre TEXT NOT NULL," +
                 "cantidad INTEGER NOT NULL," +
                 "precio REAL NOT NULL," +
-                "descripcion TEXT" +
+                "descripcion TEXT," +
+                "imagen TEXT" +
                 ");");
 
         db.execSQL("CREATE TABLE pedidos (" +

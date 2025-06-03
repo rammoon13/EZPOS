@@ -9,6 +9,7 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -104,8 +105,9 @@ public class NuevoPedidoActivity extends AppCompatActivity {
             int cantidad = cursor.getInt(cursor.getColumnIndexOrThrow("cantidad"));
             double precio = cursor.getDouble(cursor.getColumnIndexOrThrow("precio"));
             String descripcion = cursor.getString(cursor.getColumnIndexOrThrow("descripcion"));
+            String imagen = cursor.getString(cursor.getColumnIndexOrThrow("imagen"));
+            Producto producto = new Producto(id, nombre, cantidad, precio, descripcion, imagen);
 
-            Producto producto = new Producto(id, nombre, cantidad, precio, descripcion);
             productosDisponibles.put(id, producto);
             productosFiltrados.add(producto);
         }
@@ -132,10 +134,17 @@ public class NuevoPedidoActivity extends AppCompatActivity {
         TextView txtNombre = cardView.findViewById(R.id.txtNombreProducto);
         TextView txtCantidad = cardView.findViewById(R.id.txtCantidadDisponible);
         TextView txtPrecio = cardView.findViewById(R.id.txtPrecio);
+        ImageView img = cardView.findViewById(R.id.imgProducto);
 
         txtNombre.setText(producto.getNombre());
         txtCantidad.setText("Quedan: " + producto.getCantidad() + " uds");
         txtPrecio.setText(String.format(Locale.getDefault(), "%.2f€", producto.getPrecio()));
+        if (producto.getImagen() != null && !producto.getImagen().isEmpty()) {
+            int resId = getResources().getIdentifier(producto.getImagen(), "drawable", getPackageName());
+            if (resId != 0) {
+                img.setImageResource(resId);
+            }
+        }
 
         if (producto.getCantidad() <= 0) {
             cardView.setBackgroundColor(getResources().getColor(android.R.color.holo_red_light));
