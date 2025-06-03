@@ -174,7 +174,7 @@ public class NuevoPedidoActivity extends AppCompatActivity {
                     productosSeleccionados.put(id, cantidad - 1);
                     totalPedido -= producto.getPrecio();
                     sumarStock(id);
-                    if (productosSeleccionados.get(id) == 1) productosSeleccionados.remove(id);
+                    if (productosSeleccionados.get(id) == 0) productosSeleccionados.remove(id);
                     actualizarListaSeleccionados();
                     cargarProductosDesdeBD();
                 });

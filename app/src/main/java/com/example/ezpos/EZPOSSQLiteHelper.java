@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class EZPOSSQLiteHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "ezpos.db";
-    private static final int DATABASE_VERSION = 5; // Aumenta si ya existe una base antigua
+    private static final int DATABASE_VERSION = 6; // Aumenta si ya existe una base antigua
 
     public EZPOSSQLiteHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -29,7 +29,9 @@ public class EZPOSSQLiteHelper extends SQLiteOpenHelper {
                 "fecha_hora TEXT," +
                 "total REAL," +
                 "pagado REAL," +
-                "devolver REAL" +
+                "devolver REAL," +
+                "cambio_devuelto INTEGER DEFAULT 0," +
+                "entregado INTEGER DEFAULT 0" +
                 ");");
 
         db.execSQL("CREATE TABLE IF NOT EXISTS detalle_pedido (" +
@@ -51,12 +53,11 @@ public class EZPOSSQLiteHelper extends SQLiteOpenHelper {
                 ");");
     }
 
-
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS productos;");
         db.execSQL("DROP TABLE IF EXISTS pedidos;");
-        db.execSQL("DROP TABLE IF EXISTS pedido_productos");
+        db.execSQL("DROP TABLE IF EXISTS detalle_pedido;");
         db.execSQL("DROP TABLE IF EXISTS historial;");
         onCreate(db);
     }

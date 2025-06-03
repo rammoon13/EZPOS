@@ -2,10 +2,12 @@ package com.example.ezpos;
 
 import android.content.ContentValues;
 import android.content.Intent;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.View;
 import android.widget.*;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -43,7 +45,12 @@ public class ResumenPedidoActivity extends AppCompatActivity {
         tvNombreCliente.setText(nombreCliente);
         tvFecha.setText(fechaHora);
 
-        mostrarProductosSeleccionados();
+        int idPedido = getIntent().getIntExtra("id_pedido", -1);
+        if (idPedido != -1) {
+            cargarDatosPedidoExistente(idPedido);
+        } else {
+            mostrarProductosSeleccionados();
+        }
 
         // Actualiza el cambio automáticamente al escribir
         etPagado.addTextChangedListener(new TextWatcher() {
@@ -174,4 +181,91 @@ public class ResumenPedidoActivity extends AppCompatActivity {
             Toast.makeText(this, "Error al procesar el pedido", Toast.LENGTH_SHORT).show();
         }
     }
+    private void cargarDatosPedidoExistente(int idPedido) {
+        EZPOSSQLiteHelper dbHelper = new EZPOSSQLiteHelper(this);
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+
+        Cursor cursorPedido = db.rawQuery("SELECT * FROM pedidos WHERE id = ?", new String[]{String.valueOf(idPedido)});
+        if (cursorPedido.moveToFirst()) {
+            nombreCliente = cursorPedido.getString(cursorPedido.getColumnIndexOrThrow("nombre_cliente"));
+            fechaHora = cursorPedido.getString(cursorPedido.getColumnIndexOrThrow("fecha_hora"));
+            totalPedido = cursorPedido.getDouble(cursorPedido.getColumnIndexOrThrow("total"));
+            double pagado = cursorPedido.getDouble(cursorPedido.getColumnIndexOrThrow("pagado"));
+            double devolver = cursorPedido.getDouble(cursorPedido.getColumnIndexOrThrow("devolver"));
+
+            tvNombreCliente.setText(nombreCliente);
+            tvFecha.setText(fechaHora);
+            tvTotal.setText(String.format("%.2f€", totalPedido));
+            etPagado.setText(String.format("%.2f", pagado));
+            etDevolver.setText(String.format("%.2f", devolver));
+        }
+        cursorPedido.close();
+
+        // Cargar productos
+        JSONArray productos = new JSONArray();
+        Cursor cursorProductos = db.rawQuery(
+                "SELECT p.id, p.nombre, dp.precio_unitario FROM detalle_pedido dp INNER JOIN productos p ON p.id = dp.id_producto WHERE dp.id_pedido = ?",
+                new String[]{String.valueOf(idPedido)}
+        );
+        while (cursorProductos.moveToNext()) {
+            JSONObject prod = new JSONObject();
+            try {
+                prod.put("id", cursorProductos.getInt(cursorProductos.getColumnIndexOrThrow("id")));
+                prod.put("nombre", cursorProductos.getString(cursorProductos.getColumnIndexOrThrow("nombre")));
+                prod.put("precio", cursorProductos.getDouble(cursorProductos.getColumnIndexOrThrow("precio_unitario")));
+                productos.put(prod);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        cursorProductos.close();
+        db.close();
+
+        try {
+            mostrarProductosResumen(productos);
+        } catch (Exception e) {
+            Toast.makeText(this, "Error al mostrar productos", Toast.LENGTH_SHORT).show();
+        }
+
+        // Ocultar botón confirmar para pedidos antiguos
+        Button btnConfirmar = findViewById(R.id.btnConfirmar);
+        btnConfirmar.setVisibility(View.GONE);
+        etPagado.setEnabled(false);
+        etDevolver.setEnabled(false);
+
+    }
+    private void mostrarProductosResumen(JSONArray productos) {
+        listaResumenProductos.removeAllViews();
+        totalPedido = 0;
+
+        for (int i = 0; i < productos.length(); i++) {
+            try {
+                JSONObject producto = productos.getJSONObject(i);
+                String nombre = producto.getString("nombre");
+                double precio = producto.getDouble("precio");
+
+                LinearLayout fila = new LinearLayout(this);
+                fila.setOrientation(LinearLayout.HORIZONTAL);
+                fila.setPadding(4, 4, 4, 4);
+
+                TextView nombreTxt = new TextView(this);
+                nombreTxt.setLayoutParams(new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1));
+                nombreTxt.setText(nombre);
+
+                TextView precioTxt = new TextView(this);
+                precioTxt.setText(String.format(Locale.getDefault(), "%.2f€", precio));
+
+                fila.addView(nombreTxt);
+                fila.addView(precioTxt);
+
+                listaResumenProductos.addView(fila);
+                totalPedido += precio;
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+        tvTotal.setText(String.format(Locale.getDefault(), "%.2f€", totalPedido));
+    }
+
 }
