@@ -28,8 +28,12 @@ import com.example.ezpos.database.DatabaseUtils;
 import com.example.ezpos.database.JsonUtils;
 import com.example.ezpos.database.Pedido;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class PedidosFragment extends Fragment {
 
@@ -122,7 +126,17 @@ public class PedidosFragment extends Fragment {
                 TextView tvPagado = cardView.findViewById(R.id.tvPagadoPedido);
                 TextView tvDevolver = cardView.findViewById(R.id.tvADevolverPedido);
 
-                tvNombreCliente.setText(pedido.getNombreCliente() + " — " + pedido.getFechaHora());
+                String fechaFormateada;
+                try {
+                    SimpleDateFormat formatoEntrada = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+                    SimpleDateFormat formatoSalida = new SimpleDateFormat("dd-MM-yyyy HH:mm", Locale.getDefault());
+                    Date fecha = formatoEntrada.parse(pedido.getFechaHora());
+                    fechaFormateada = formatoSalida.format(fecha);
+                } catch (ParseException e) {
+                    fechaFormateada = pedido.getFechaHora(); // en caso de error
+                }
+                tvNombreCliente.setText(pedido.getNombreCliente() + " — " + fechaFormateada);
+
                 tvTotal.setText("Total: " + String.format("%.2f", pedido.getTotal()) + " €");
                 tvPagado.setText("Pagado: " + String.format("%.2f", pedido.getPagado()) + " €");
                 tvDevolver.setText("A Devolver: " + String.format("%.2f", pedido.getADevolver()) + " €");

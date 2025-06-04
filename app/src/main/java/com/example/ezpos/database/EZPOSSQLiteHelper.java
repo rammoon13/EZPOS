@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class EZPOSSQLiteHelper extends SQLiteOpenHelper {
 
     public EZPOSSQLiteHelper(Context context, String nombreDB) {
-        super(context, nombreDB, null, 8);
+        super(context, nombreDB, null, 9);
     }
 
     @Override

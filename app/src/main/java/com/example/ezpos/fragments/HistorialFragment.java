@@ -1,5 +1,6 @@
 package com.example.ezpos.fragments;
 
+import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -8,6 +9,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.*;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.TextView;
@@ -25,6 +27,8 @@ import com.example.ezpos.database.EZPOSSQLiteHelper;
 import com.example.ezpos.database.JsonUtils;
 import com.example.ezpos.database.Pedido;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class HistorialFragment extends Fragment {
@@ -32,7 +36,11 @@ public class HistorialFragment extends Fragment {
     private EZPOSSQLiteHelper dbHelper;
     private LinearLayout listaHistorial;
     private EditText buscarHistorial;
+    private EditText fechaDesdeText, fechaHastaText;
+    private ImageButton btnLimpiarFechas;
     private List<Pedido> pedidos = new ArrayList<>();
+    private Calendar fechaDesde = null;
+    private Calendar fechaHasta = null;
 
     @Nullable
     @Override
@@ -47,12 +55,47 @@ public class HistorialFragment extends Fragment {
         dbHelper = DatabaseUtils.getDatabaseHelper(requireContext());
         listaHistorial = view.findViewById(R.id.listaHistorial);
         buscarHistorial = view.findViewById(R.id.buscarHistorial);
+        fechaDesdeText = view.findViewById(R.id.fechaDesdeText);
+        fechaHastaText = view.findViewById(R.id.fechaHastaText);
+        btnLimpiarFechas = view.findViewById(R.id.btnLimpiarFechas);
+
+        // Evita que se abra el teclado en los campos de fecha
+        fechaDesdeText.setShowSoftInputOnFocus(false);
+        fechaHastaText.setShowSoftInputOnFocus(false);
 
         view.findViewById(R.id.btnCerrarSesion).setOnClickListener(v -> {
             JsonUtils.cerrarSesion(requireContext());
             Intent intent = new Intent(requireContext(), MainActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
+        });
+
+        fechaDesdeText.setOnClickListener(v -> mostrarSelectorFecha(true));
+        fechaHastaText.setOnClickListener(v -> mostrarSelectorFecha(false));
+
+        btnLimpiarFechas.setOnClickListener(v -> {
+            fechaDesde = null;
+            fechaHasta = null;
+            fechaDesdeText.setText("");
+            fechaHastaText.setText("");
+            actualizarVisibilidadBotonLimpiarFechas();
+            mostrarPedidosFiltrados(buscarHistorial.getText().toString());
+        });
+
+        fechaDesdeText.setOnFocusChangeListener((v, hasFocus) -> {
+            if (!hasFocus && fechaDesdeText.getText().toString().isEmpty()) {
+                fechaDesde = null;
+                actualizarVisibilidadBotonLimpiarFechas();
+                mostrarPedidosFiltrados(buscarHistorial.getText().toString());
+            }
+        });
+
+        fechaHastaText.setOnFocusChangeListener((v, hasFocus) -> {
+            if (!hasFocus && fechaHastaText.getText().toString().isEmpty()) {
+                fechaHasta = null;
+                actualizarVisibilidadBotonLimpiarFechas();
+                mostrarPedidosFiltrados(buscarHistorial.getText().toString());
+            }
         });
 
         buscarHistorial.addTextChangedListener(new TextWatcher() {
@@ -66,12 +109,20 @@ public class HistorialFragment extends Fragment {
         cargarPedidosDesdeBD();
     }
 
+    private void actualizarVisibilidadBotonLimpiarFechas() {
+        if (fechaDesde == null && fechaHasta == null) {
+            btnLimpiarFechas.setVisibility(View.GONE);
+        } else {
+            btnLimpiarFechas.setVisibility(View.VISIBLE);
+        }
+    }
+
     private void cargarPedidosDesdeBD() {
         pedidos.clear();
         SQLiteDatabase db = dbHelper.getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT * FROM pedidos", null);
+        Cursor cursor = db.rawQuery("SELECT * FROM pedidos ORDER BY fecha_hora DESC", null);
         while (cursor.moveToNext()) {
-            Pedido pedido = Pedido.fromCursor(cursor); // debes tener este método
+            Pedido pedido = Pedido.fromCursor(cursor);
             pedidos.add(pedido);
         }
         cursor.close();
@@ -82,7 +133,26 @@ public class HistorialFragment extends Fragment {
     private void mostrarPedidosFiltrados(String filtro) {
         listaHistorial.removeAllViews();
         for (Pedido p : pedidos) {
-            if (p.getNombreCliente().toLowerCase().contains(filtro.toLowerCase())) {
+            boolean pasaFiltroTexto = p.getNombreCliente().toLowerCase().contains(filtro.toLowerCase());
+
+            boolean pasaFiltroFecha = true;
+            if (fechaDesde != null || fechaHasta != null) {
+                try {
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+                    Date fechaPedido = sdf.parse(p.getFechaHora());
+
+                    if (fechaDesde != null && fechaPedido.before(fechaDesde.getTime())) {
+                        pasaFiltroFecha = false;
+                    }
+                    if (fechaHasta != null && fechaPedido.after(fechaHasta.getTime())) {
+                        pasaFiltroFecha = false;
+                    }
+                } catch (ParseException e) {
+                    pasaFiltroFecha = false;
+                }
+            }
+
+            if (pasaFiltroTexto && pasaFiltroFecha) {
                 listaHistorial.addView(crearCardPedido(p));
             }
         }
@@ -98,7 +168,16 @@ public class HistorialFragment extends Fragment {
         TextView tvPagado = card.findViewById(R.id.tvPagadoPedido);
         TextView tvDevolver = card.findViewById(R.id.tvADevolverPedido);
 
-        tvFecha.setText(pedido.getFechaHora().split(" ")[0]);
+        try {
+            String fechaOriginal = pedido.getFechaHora();
+            SimpleDateFormat formatoEntrada = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+            SimpleDateFormat formatoSalida = new SimpleDateFormat("dd-MM-yyyy HH:mm", Locale.getDefault());
+            Date fecha = formatoEntrada.parse(fechaOriginal);
+            tvFecha.setText(formatoSalida.format(fecha));
+        } catch (ParseException e) {
+            tvFecha.setText(pedido.getFechaHora());
+        }
+
         tvNombre.setText(pedido.getNombreCliente());
         tvTotal.setText(String.format("Total: %.2f€", pedido.getTotal()));
         tvPagado.setText(String.format("Pagado: %.2f€", pedido.getPagado()));
@@ -117,10 +196,6 @@ public class HistorialFragment extends Fragment {
         });
 
         card.setOnLongClickListener(v -> {
-            int rojo = getResources().getColor(android.R.color.holo_red_dark);
-            int verde = getResources().getColor(android.R.color.holo_green_dark);
-            int colorActual = tvDevolver.getCurrentTextColor();
-
             PopupMenu popup = new PopupMenu(requireContext(), card);
             SQLiteDatabase db = dbHelper.getWritableDatabase();
 
@@ -149,4 +224,31 @@ public class HistorialFragment extends Fragment {
         return card;
     }
 
+    private void mostrarSelectorFecha(boolean esDesde) {
+        Calendar calendario = Calendar.getInstance();
+        DatePickerDialog datePicker = new DatePickerDialog(requireContext(),
+                (view, year, month, dayOfMonth) -> {
+                    Calendar seleccionada = Calendar.getInstance();
+                    seleccionada.set(year, month, dayOfMonth, 0, 0, 0);
+                    SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
+
+                    if (esDesde) {
+                        fechaDesde = seleccionada;
+                        fechaDesdeText.setText(sdf.format(seleccionada.getTime()));
+                    } else {
+                        fechaHasta = seleccionada;
+                        seleccionada.set(Calendar.HOUR_OF_DAY, 23);
+                        seleccionada.set(Calendar.MINUTE, 59);
+                        seleccionada.set(Calendar.SECOND, 59);
+                        fechaHastaText.setText(sdf.format(seleccionada.getTime()));
+                    }
+
+                    actualizarVisibilidadBotonLimpiarFechas();
+                    mostrarPedidosFiltrados(buscarHistorial.getText().toString());
+                },
+                calendario.get(Calendar.YEAR),
+                calendario.get(Calendar.MONTH),
+                calendario.get(Calendar.DAY_OF_MONTH));
+        datePicker.show();
+    }
 }
