@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment;
 import com.example.ezpos.fragments.HistorialFragment;
 import com.example.ezpos.fragments.InventarioFragment;
 import com.example.ezpos.fragments.PedidosFragment;
+import com.example.ezpos.EasterEgg;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class HomeActivity extends AppCompatActivity {
@@ -17,6 +18,11 @@ public class HomeActivity extends AppCompatActivity {
 
         BottomNavigationView bottomNav = findViewById(R.id.bottom_nav);
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new PedidosFragment()).commit();
+
+        bottomNav.setOnLongClickListener(v -> {
+            EasterEgg.show(this);
+            return true;
+        });
 
         bottomNav.setOnItemSelectedListener(item -> {
             Fragment selectedFragment = null;
