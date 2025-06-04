@@ -81,7 +81,7 @@ public class InventarioFragment extends Fragment {
     private void mostrarProductos() {
         listaProductos.clear();
 
-        EZPOSSQLiteHelper dbHelper = new EZPOSSQLiteHelper(requireContext());
+        EZPOSSQLiteHelper dbHelper = DatabaseUtils.getDatabaseHelper(requireContext());
         SQLiteDatabase db = dbHelper.getReadableDatabase();
 
         Cursor cursor = db.rawQuery("SELECT * FROM productos", null);
@@ -107,10 +107,23 @@ public class InventarioFragment extends Fragment {
         String filtro = texto.toLowerCase();
 
         for (Producto producto : listaProductos) {
-            if (producto.getNombre().toLowerCase().contains(filtro)) {
-                View card = ProductoCardViewBuilder.crear(requireContext(), producto);
-                contenedor.addView(card);
-            }
+            View card = ProductoCardViewBuilder.crear(requireContext(), producto);
+
+            // Al hacer clic en la tarjeta, abrimos la vista solo lectura
+            card.setOnClickListener(v -> {
+                Intent intent = new Intent(requireContext(), AgregarProductoActivity.class);
+                intent.putExtra("producto_id", producto.getId());
+                intent.putExtra("nombre", producto.getNombre());
+                intent.putExtra("cantidad", producto.getCantidad());
+                intent.putExtra("precio", producto.getPrecio());
+                intent.putExtra("descripcion", producto.getDescripcion());
+                intent.putExtra("imagen", producto.getImagen());
+                intent.putExtra("soloLectura", true);  // <<--- NUEVO
+                startActivity(intent);
+            });
+
+            contenedor.addView(card);
         }
     }
+
 }

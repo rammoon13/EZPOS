@@ -143,7 +143,7 @@ public class ResumenPedidoActivity extends AppCompatActivity {
 
             double devolver = pagado - totalPedido;
 
-            EZPOSSQLiteHelper dbHelper = new EZPOSSQLiteHelper(this);
+            EZPOSSQLiteHelper dbHelper = DatabaseUtils.getDatabaseHelper(this);
             SQLiteDatabase db = dbHelper.getWritableDatabase();
 
             ContentValues pedidoValues = new ContentValues();
@@ -182,7 +182,7 @@ public class ResumenPedidoActivity extends AppCompatActivity {
         }
     }
     private void cargarDatosPedidoExistente(int idPedido) {
-        EZPOSSQLiteHelper dbHelper = new EZPOSSQLiteHelper(this);
+        EZPOSSQLiteHelper dbHelper = DatabaseUtils.getDatabaseHelper(this);
         SQLiteDatabase db = dbHelper.getReadableDatabase();
 
         Cursor cursorPedido = db.rawQuery("SELECT * FROM pedidos WHERE id = ?", new String[]{String.valueOf(idPedido)});

@@ -37,7 +37,7 @@ public class HistorialFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        dbHelper = new EZPOSSQLiteHelper(requireContext());
+        dbHelper = DatabaseUtils.getDatabaseHelper(requireContext());
         listaHistorial = view.findViewById(R.id.listaHistorial);
         buscarHistorial = view.findViewById(R.id.buscarHistorial);
 

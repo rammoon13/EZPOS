@@ -3,6 +3,7 @@ package com.example.ezpos;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -20,6 +21,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -39,7 +41,7 @@ public class NuevoPedidoActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_nuevo_pedido);
 
-        dbHelper = new EZPOSSQLiteHelper(this);
+        dbHelper = DatabaseUtils.getDatabaseHelper(this);
         listaProductos = findViewById(R.id.listaProductosDisponibles);
         listaSeleccionados = findViewById(R.id.listaProductosSeleccionados);
         buscador = findViewById(R.id.etBuscarProducto);
@@ -139,10 +141,11 @@ public class NuevoPedidoActivity extends AppCompatActivity {
         txtNombre.setText(producto.getNombre());
         txtCantidad.setText("Quedan: " + producto.getCantidad() + " uds");
         txtPrecio.setText(String.format(Locale.getDefault(), "%.2f€", producto.getPrecio()));
+
         if (producto.getImagen() != null && !producto.getImagen().isEmpty()) {
-            int resId = getResources().getIdentifier(producto.getImagen(), "drawable", getPackageName());
-            if (resId != 0) {
-                img.setImageResource(resId);
+            File imgFile = new File(producto.getImagen());
+            if (imgFile.exists()) {
+                img.setImageURI(Uri.fromFile(imgFile));
             }
         }
 

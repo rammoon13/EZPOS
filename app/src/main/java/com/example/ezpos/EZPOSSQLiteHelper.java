@@ -6,11 +6,8 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class EZPOSSQLiteHelper extends SQLiteOpenHelper {
 
-    private static final String DATABASE_NAME = "ezpos.db";
-    private static final int DATABASE_VERSION = 7; // Aumenta si ya existe una base antigua
-
-    public EZPOSSQLiteHelper(Context context) {
-        super(context, DATABASE_NAME, null, DATABASE_VERSION);
+    public EZPOSSQLiteHelper(Context context, String nombreDB) {
+        super(context, nombreDB, null, 8);
     }
 
     @Override
@@ -21,8 +18,7 @@ public class EZPOSSQLiteHelper extends SQLiteOpenHelper {
                 "cantidad INTEGER NOT NULL," +
                 "precio REAL NOT NULL," +
                 "descripcion TEXT," +
-                "imagen TEXT" +
-                ");");
+                "imagen TEXT);");
 
         db.execSQL("CREATE TABLE pedidos (" +
                 "id INTEGER PRIMARY KEY AUTOINCREMENT," +
@@ -32,8 +28,7 @@ public class EZPOSSQLiteHelper extends SQLiteOpenHelper {
                 "pagado REAL," +
                 "devolver REAL," +
                 "cambio_devuelto INTEGER DEFAULT 0," +
-                "entregado INTEGER DEFAULT 0" +
-                ");");
+                "entregado INTEGER DEFAULT 0);");
 
         db.execSQL("CREATE TABLE IF NOT EXISTS detalle_pedido (" +
                 "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
@@ -42,7 +37,7 @@ public class EZPOSSQLiteHelper extends SQLiteOpenHelper {
                 "cantidad INTEGER NOT NULL, " +
                 "precio_unitario REAL NOT NULL, " +
                 "FOREIGN KEY(id_pedido) REFERENCES pedidos(id), " +
-                "FOREIGN KEY(id_producto) REFERENCES productos(id))");
+                "FOREIGN KEY(id_producto) REFERENCES productos(id));");
 
         db.execSQL("CREATE TABLE historial (" +
                 "id INTEGER PRIMARY KEY AUTOINCREMENT," +
@@ -50,8 +45,7 @@ public class EZPOSSQLiteHelper extends SQLiteOpenHelper {
                 "nombre_cliente TEXT," +
                 "total REAL," +
                 "pagado REAL," +
-                "devolver REAL" +
-                ");");
+                "devolver REAL);");
     }
 
     @Override

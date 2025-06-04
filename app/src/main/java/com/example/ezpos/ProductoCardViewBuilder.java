@@ -4,12 +4,15 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.io.File;
 
 public class ProductoCardViewBuilder {
 
@@ -25,14 +28,14 @@ public class ProductoCardViewBuilder {
         nombre.setText(producto.getNombre());
         cantidad.setText("Cantidad: " + producto.getCantidad());
         precio.setText("Precio: " + producto.getPrecio() + "€");
+
         if (producto.getImagen() != null && !producto.getImagen().isEmpty()) {
-            int resId = context.getResources().getIdentifier(producto.getImagen(), "drawable", context.getPackageName());
-            if (resId != 0) {
-                image.setImageResource(resId);
+            File imgFile = new File(producto.getImagen());
+            if (imgFile.exists()) {
+                image.setImageURI(Uri.fromFile(imgFile));
             }
         }
 
-        // Menú contextual al mantener pulsado
         view.setOnLongClickListener(v -> {
             PopupMenu popup = new PopupMenu(context, v);
             popup.getMenuInflater().inflate(R.menu.menu_producto, popup.getMenu());
@@ -45,11 +48,12 @@ public class ProductoCardViewBuilder {
                     intent.putExtra("cantidad", producto.getCantidad());
                     intent.putExtra("precio", producto.getPrecio());
                     intent.putExtra("descripcion", producto.getDescripcion());
+                    intent.putExtra("imagen", producto.getImagen());
                     context.startActivity(intent);
                     return true;
                 } else if (item.getItemId() == R.id.menu_eliminar) {
                     eliminarProducto(context, producto.getId());
-                    ((Activity) context).recreate(); // Refrescar vista actual
+                    ((Activity) context).recreate();
                     return true;
                 }
                 return false;
@@ -63,7 +67,7 @@ public class ProductoCardViewBuilder {
     }
 
     private static void eliminarProducto(Context context, int idProducto) {
-        EZPOSSQLiteHelper dbHelper = new EZPOSSQLiteHelper(context);
+        EZPOSSQLiteHelper dbHelper = DatabaseUtils.getDatabaseHelper(context);
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         int filas = db.delete("productos", "id = ?", new String[]{String.valueOf(idProducto)});
         db.close();

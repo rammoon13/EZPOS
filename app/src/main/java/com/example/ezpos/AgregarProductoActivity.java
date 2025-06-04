@@ -2,11 +2,14 @@ package com.example.ezpos;
 
 import android.content.ContentValues;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -18,16 +21,20 @@ import androidx.core.content.FileProvider;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.io.IOException;
 
 public class AgregarProductoActivity extends AppCompatActivity {
 
     ImageButton btnImagen;
     EditText etNombre, etCantidad, etPrecio, etDescripcion;
-    int idProducto = -1; // Por defecto, -1 = nuevo producto
+    Button btnAgregar;
+    int idProducto = -1;
     private static final int REQUEST_GALERIA = 1;
     private static final int REQUEST_CAMARA = 2;
     private String rutaImagenSeleccionada = null;
+    private Uri uriFotoCamara = null;
+    private boolean soloLectura = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,39 +46,81 @@ public class AgregarProductoActivity extends AppCompatActivity {
         etCantidad = findViewById(R.id.etCantidad);
         etPrecio = findViewById(R.id.etPrecio);
         etDescripcion = findViewById(R.id.etDescripcion);
-
-        btnImagen.setOnClickListener(v -> {
-            PopupMenu menu = new PopupMenu(this, btnImagen);
-            menu.getMenu().add("Elegir de galería").setOnMenuItemClickListener(item -> {
-                Intent intent = new Intent(Intent.ACTION_PICK);
-                intent.setType("image/*");
-                startActivityForResult(intent, REQUEST_GALERIA);
-                return true;
-            });
-            menu.getMenu().add("Tomar foto").setOnMenuItemClickListener(item -> {
-                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                startActivityForResult(intent, REQUEST_CAMARA);
-                return true;
-            });
-            menu.show();
-        });
+        btnAgregar = findViewById(R.id.btnAgregar);
 
         Button btnAtras = findViewById(R.id.btnAtras);
         btnAtras.setOnClickListener(v -> finish());
 
-        Button btnAgregar = findViewById(R.id.btnAgregar);
-        btnAgregar.setOnClickListener(v -> agregarProducto());
-
-        // Si venimos desde "Editar"
         Intent intent = getIntent();
+        soloLectura = intent.getBooleanExtra("soloLectura", false);
+
         if (intent != null && intent.hasExtra("producto_id")) {
             idProducto = intent.getIntExtra("producto_id", -1);
             etNombre.setText(intent.getStringExtra("nombre"));
             etCantidad.setText(String.valueOf(intent.getIntExtra("cantidad", 0)));
             etPrecio.setText(String.valueOf(intent.getDoubleExtra("precio", 0.0)));
             etDescripcion.setText(intent.getStringExtra("descripcion"));
+
+            rutaImagenSeleccionada = intent.getStringExtra("imagen");
+            if (rutaImagenSeleccionada != null) {
+                File imgFile = new File(rutaImagenSeleccionada);
+                if (imgFile.exists()) {
+                    Bitmap bitmap = BitmapFactory.decodeFile(rutaImagenSeleccionada);
+                    btnImagen.setImageBitmap(bitmap);
+                }
+            }
+
             btnAgregar.setText("Guardar cambios");
         }
+
+        if (soloLectura) {
+            desactivarEdicion();
+        } else {
+            btnAgregar.setOnClickListener(v -> agregarProducto());
+
+            if (checkSelfPermission(android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(new String[]{android.Manifest.permission.CAMERA}, 100);
+            }
+
+            btnImagen.setOnClickListener(v -> mostrarMenuImagen());
+        }
+    }
+
+    private void desactivarEdicion() {
+        etNombre.setEnabled(false);
+        etCantidad.setEnabled(false);
+        etPrecio.setEnabled(false);
+        etDescripcion.setEnabled(false);
+        btnImagen.setEnabled(false);
+        btnAgregar.setVisibility(View.GONE);
+    }
+
+    private void mostrarMenuImagen() {
+        PopupMenu menu = new PopupMenu(this, btnImagen);
+        menu.getMenu().add("Elegir de galería").setOnMenuItemClickListener(item -> {
+            Intent intent = new Intent(Intent.ACTION_PICK);
+            intent.setType("image/*");
+            startActivityForResult(intent, REQUEST_GALERIA);
+            return true;
+        });
+        menu.getMenu().add("Tomar foto").setOnMenuItemClickListener(item -> {
+            File imagenArchivo = new File(getFilesDir(), "foto_temp_" + System.currentTimeMillis() + ".jpg");
+            try {
+                imagenArchivo.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+                Toast.makeText(this, "No se pudo crear el archivo", Toast.LENGTH_SHORT).show();
+                return true;
+            }
+
+            uriFotoCamara = FileProvider.getUriForFile(this, getPackageName() + ".provider", imagenArchivo);
+            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            intent.putExtra(MediaStore.EXTRA_OUTPUT, uriFotoCamara);
+            intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+            startActivityForResult(intent, REQUEST_CAMARA);
+            return true;
+        });
+        menu.show();
     }
 
     private void agregarProducto() {
@@ -87,7 +136,6 @@ public class AgregarProductoActivity extends AppCompatActivity {
 
         int cantidad;
         double precio;
-
         try {
             cantidad = Integer.parseInt(cantidadStr);
             precio = Double.parseDouble(precioStr);
@@ -96,7 +144,7 @@ public class AgregarProductoActivity extends AppCompatActivity {
             return;
         }
 
-        EZPOSSQLiteHelper dbHelper = new EZPOSSQLiteHelper(this);
+        EZPOSSQLiteHelper dbHelper = DatabaseUtils.getDatabaseHelper(this);
         SQLiteDatabase db = dbHelper.getWritableDatabase();
 
         ContentValues values = new ContentValues();
@@ -104,12 +152,11 @@ public class AgregarProductoActivity extends AppCompatActivity {
         values.put("cantidad", cantidad);
         values.put("precio", precio);
         values.put("descripcion", descripcion);
+        values.put("imagen", rutaImagenSeleccionada);
 
         if (idProducto == -1) {
-            // Nuevo producto
             long resultado = db.insert("productos", null, values);
             db.close();
-
             if (resultado != -1) {
                 Toast.makeText(this, "Producto añadido correctamente", Toast.LENGTH_SHORT).show();
                 finish();
@@ -117,10 +164,8 @@ public class AgregarProductoActivity extends AppCompatActivity {
                 Toast.makeText(this, "Error al guardar", Toast.LENGTH_SHORT).show();
             }
         } else {
-            // Actualización
             int filas = db.update("productos", values, "id = ?", new String[]{String.valueOf(idProducto)});
             db.close();
-
             if (filas > 0) {
                 Toast.makeText(this, "Producto actualizado correctamente", Toast.LENGTH_SHORT).show();
                 finish();
@@ -129,35 +174,62 @@ public class AgregarProductoActivity extends AppCompatActivity {
             }
         }
     }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
             if (requestCode == REQUEST_GALERIA && data != null) {
                 Uri selectedImageUri = data.getData();
-                rutaImagenSeleccionada = selectedImageUri.toString();
-                btnImagen.setImageURI(selectedImageUri);
-            } else if (requestCode == REQUEST_CAMARA && data != null) {
-                Bitmap foto = (Bitmap) data.getExtras().get("data");
-                Uri tempUri = guardarImagenTemporal(foto);
-                if (tempUri != null) {
-                    rutaImagenSeleccionada = tempUri.toString();
-                    btnImagen.setImageBitmap(foto);
+                if (selectedImageUri != null) {
+                    try {
+                        InputStream inputStream = getContentResolver().openInputStream(selectedImageUri);
+                        Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+                        inputStream.close();
+                        rutaImagenSeleccionada = guardarImagenLocal(bitmap);
+                        btnImagen.setImageBitmap(bitmap);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            } else if (requestCode == REQUEST_CAMARA && uriFotoCamara != null) {
+                try {
+                    InputStream inputStream = getContentResolver().openInputStream(uriFotoCamara);
+                    Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+                    inputStream.close();
+                    rutaImagenSeleccionada = guardarImagenLocal(bitmap);
+                    btnImagen.setImageBitmap(bitmap);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Toast.makeText(this, "Error al cargar la imagen", Toast.LENGTH_SHORT).show();
                 }
             }
         }
     }
-    private Uri guardarImagenTemporal(Bitmap bitmap) {
+
+    private String guardarImagenLocal(Bitmap bitmap) {
         try {
-            File file = new File(getCacheDir(), "producto_" + System.currentTimeMillis() + ".jpg");
-            FileOutputStream fos = new FileOutputStream(file);
+            File directorio = new File(getFilesDir(), "imagenes_productos");
+            if (!directorio.exists()) {
+                directorio.mkdirs();
+            }
+
+            File archivo = new File(directorio, "producto_" + System.currentTimeMillis() + ".jpg");
+            FileOutputStream fos = new FileOutputStream(archivo);
             bitmap.compress(Bitmap.CompressFormat.JPEG, 90, fos);
             fos.close();
-            return FileProvider.getUriForFile(this, getPackageName() + ".provider", file);
+            return archivo.getAbsolutePath();
         } catch (IOException e) {
             e.printStackTrace();
             return null;
         }
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == 100 && grantResults.length > 0 && grantResults[0] != PackageManager.PERMISSION_GRANTED) {
+            Toast.makeText(this, "Permiso de cámara denegado", Toast.LENGTH_SHORT).show();
+        }
+    }
 }

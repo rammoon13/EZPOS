@@ -81,7 +81,7 @@ public class PedidosFragment extends Fragment {
     private void cargarPedidosDesdeBD() {
         listaCompletaPedidos.clear();
 
-        SQLiteDatabase db = new EZPOSSQLiteHelper(requireContext()).getReadableDatabase();
+        SQLiteDatabase db = DatabaseUtils.getDatabaseHelper(requireContext()).getReadableDatabase();
         Cursor cursor = db.rawQuery("SELECT * FROM pedidos WHERE entregado = 0 ORDER BY id DESC", null);
 
         while (cursor.moveToNext()) {
@@ -144,7 +144,7 @@ public class PedidosFragment extends Fragment {
                     int rojo = getResources().getColor(android.R.color.holo_red_dark);
                     int verde = getResources().getColor(android.R.color.holo_green_dark);
                     PopupMenu popup = new PopupMenu(requireContext(), cardView);
-                    SQLiteDatabase writableDb = new EZPOSSQLiteHelper(requireContext()).getWritableDatabase();
+                    SQLiteDatabase writableDb = DatabaseUtils.getDatabaseHelper(requireContext()).getWritableDatabase();
 
                     if (colorActual == rojo && pedido.getADevolver() > 0.01 && !pedido.isCambioDevuelto()) {
                         popup.getMenu().add("Entregar cambio").setOnMenuItemClickListener(item -> {
