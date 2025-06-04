@@ -1,6 +1,8 @@
 package com.example.ezpos;
 
 import android.os.Bundle;
+import android.widget.FrameLayout;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
@@ -17,9 +19,10 @@ public class HomeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         BottomNavigationView bottomNav = findViewById(R.id.bottom_nav);
+        FrameLayout pantalla = findViewById(R.id.fragment_container);
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new PedidosFragment()).commit();
 
-        bottomNav.setOnLongClickListener(v -> {
+        pantalla.setOnLongClickListener(v -> {
             EasterEgg.show(this);
             return true;
         });
