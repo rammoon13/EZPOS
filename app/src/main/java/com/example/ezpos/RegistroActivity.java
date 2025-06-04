@@ -9,6 +9,9 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.ezpos.database.JsonUtils;
+import com.example.ezpos.database.Usuario;
+
 import java.util.List;
 
 public class RegistroActivity extends AppCompatActivity {

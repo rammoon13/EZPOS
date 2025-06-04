@@ -1,4 +1,4 @@
-package com.example.ezpos;
+package com.example.ezpos.cardviews;
 
 import android.app.Activity;
 import android.content.Context;
@@ -11,6 +11,12 @@ import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.example.ezpos.AgregarProductoActivity;
+import com.example.ezpos.R;
+import com.example.ezpos.database.DatabaseUtils;
+import com.example.ezpos.database.EZPOSSQLiteHelper;
+import com.example.ezpos.database.Producto;
 
 import java.io.File;
 

@@ -11,11 +11,13 @@ import android.view.View;
 import android.widget.*;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.ezpos.database.DatabaseUtils;
+import com.example.ezpos.database.EZPOSSQLiteHelper;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class ResumenPedidoActivity extends AppCompatActivity {

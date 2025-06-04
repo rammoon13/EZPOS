@@ -1,4 +1,4 @@
-package com.example.ezpos;
+package com.example.ezpos.database;
 
 public class Producto {
     private int id;

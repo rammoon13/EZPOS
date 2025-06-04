@@ -3,6 +3,10 @@ package com.example.ezpos;
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+
+import com.example.ezpos.fragments.HistorialFragment;
+import com.example.ezpos.fragments.InventarioFragment;
+import com.example.ezpos.fragments.PedidosFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class HomeActivity extends AppCompatActivity {

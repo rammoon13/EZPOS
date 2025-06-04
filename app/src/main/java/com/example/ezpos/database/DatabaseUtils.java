@@ -1,5 +1,5 @@
 // En una clase utilitaria como DatabaseUtils.java (nueva)
-package com.example.ezpos;
+package com.example.ezpos.database;
 
 import android.content.Context;
 

@@ -1,4 +1,4 @@
-package com.example.ezpos;
+package com.example.ezpos.database;
 
 import android.database.Cursor;
 

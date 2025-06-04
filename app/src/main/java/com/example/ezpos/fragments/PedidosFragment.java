@@ -1,15 +1,12 @@
-package com.example.ezpos;
+package com.example.ezpos.fragments;
 
-import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
@@ -23,14 +20,14 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
+import com.example.ezpos.MainActivity;
+import com.example.ezpos.NuevoPedidoActivity;
+import com.example.ezpos.R;
+import com.example.ezpos.ResumenPedidoActivity;
+import com.example.ezpos.database.DatabaseUtils;
+import com.example.ezpos.database.JsonUtils;
+import com.example.ezpos.database.Pedido;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 

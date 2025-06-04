@@ -1,4 +1,4 @@
-package com.example.ezpos;
+package com.example.ezpos.fragments;
 
 import android.content.Intent;
 import android.database.Cursor;
@@ -22,6 +22,14 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+
+import com.example.ezpos.AgregarProductoActivity;
+import com.example.ezpos.MainActivity;
+import com.example.ezpos.cardviews.ProductoCardViewBuilder;
+import com.example.ezpos.R;
+import com.example.ezpos.database.DatabaseUtils;
+import com.example.ezpos.database.JsonUtils;
+import com.example.ezpos.database.Producto;
 
 import java.io.File;
 import java.io.FileInputStream;

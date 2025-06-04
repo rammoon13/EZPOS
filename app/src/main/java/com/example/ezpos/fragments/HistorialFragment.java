@@ -1,6 +1,5 @@
-package com.example.ezpos;
+package com.example.ezpos.fragments;
 
-import android.app.AlertDialog;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -16,8 +15,16 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
+
+import com.example.ezpos.MainActivity;
+import com.example.ezpos.R;
+import com.example.ezpos.ResumenPedidoActivity;
+import com.example.ezpos.database.DatabaseUtils;
+import com.example.ezpos.database.EZPOSSQLiteHelper;
+import com.example.ezpos.database.JsonUtils;
+import com.example.ezpos.database.Pedido;
+
 import java.util.*;
 
 public class HistorialFragment extends Fragment {

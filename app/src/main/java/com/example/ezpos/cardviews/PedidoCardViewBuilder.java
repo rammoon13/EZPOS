@@ -1,9 +1,12 @@
-package com.example.ezpos;
+package com.example.ezpos.cardviews;
 
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
+
+import com.example.ezpos.R;
+import com.example.ezpos.database.Pedido;
 
 public class PedidoCardViewBuilder {
 
