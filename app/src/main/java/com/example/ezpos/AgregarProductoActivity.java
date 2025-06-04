@@ -14,6 +14,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.PopupMenu;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -32,6 +33,7 @@ public class AgregarProductoActivity extends AppCompatActivity {
     ImageButton btnImagen;
     EditText etNombre, etCantidad, etPrecio, etDescripcion;
     Button btnAgregar;
+    TextView tvTitulo;
     int idProducto = -1;
     private static final int REQUEST_GALERIA = 1;
     private static final int REQUEST_CAMARA = 2;
@@ -50,6 +52,7 @@ public class AgregarProductoActivity extends AppCompatActivity {
         etPrecio = findViewById(R.id.etPrecio);
         etDescripcion = findViewById(R.id.etDescripcion);
         btnAgregar = findViewById(R.id.btnAgregar);
+        tvTitulo = findViewById(R.id.tvTituloProducto); // Título dinámico
 
         Button btnAtras = findViewById(R.id.btnAtras);
         btnAtras.setOnClickListener(v -> finish());
@@ -57,6 +60,7 @@ public class AgregarProductoActivity extends AppCompatActivity {
         Intent intent = getIntent();
         soloLectura = intent.getBooleanExtra("soloLectura", false);
 
+        // Si venimos a editar o visualizar
         if (intent != null && intent.hasExtra("producto_id")) {
             idProducto = intent.getIntExtra("producto_id", -1);
             etNombre.setText(intent.getStringExtra("nombre"));
@@ -73,12 +77,19 @@ public class AgregarProductoActivity extends AppCompatActivity {
                 }
             }
 
-            btnAgregar.setText("Guardar cambios");
+            if (soloLectura) {
+                tvTitulo.setText(intent.getStringExtra("nombre")); // ← Modo vista
+                desactivarEdicion();
+            } else {
+                tvTitulo.setText("Editar Producto"); // ← Modo edición
+                btnAgregar.setText("Guardar cambios");
+            }
+        } else {
+            tvTitulo.setText("Agregar Producto"); // ← Modo nuevo
         }
 
-        if (soloLectura) {
-            desactivarEdicion();
-        } else {
+        // Si no es solo lectura, habilitamos botones
+        if (!soloLectura) {
             btnAgregar.setOnClickListener(v -> agregarProducto());
 
             if (checkSelfPermission(android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
