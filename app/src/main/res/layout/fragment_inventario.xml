@@ -29,11 +29,22 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="EZPOS      "
+            android:text="EZPOS"
             android:textAlignment="center"
             android:textStyle="bold"
             android:textSize="24sp"
             android:textColor="?attr/colorOnBackground" />
+
+        <!-- Botón menú de exportar/importar -->
+        <ImageButton
+            android:id="@+id/btnMenuDatos"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@android:color/transparent"
+            android:padding="4dp"
+            android:contentDescription="Exportar o importar datos"
+            android:src="@drawable/baseline_cloud_download_24"
+            android:tint="?attr/colorOnBackground" />
     </LinearLayout>
 
     <TextView

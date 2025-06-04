@@ -1,8 +1,10 @@
 package com.example.ezpos;
 
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -21,6 +23,14 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,7 +47,6 @@ public class PedidosFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_pedidos, container, false);
 
-        // Botón iniciar pedido
         view.findViewById(R.id.btnIniciarPedido).setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), NuevoPedidoActivity.class);
             startActivity(intent);
@@ -62,7 +71,6 @@ public class PedidosFragment extends Fragment {
             }
         });
 
-        // Botón cerrar sesión
         ImageButton btnCerrarSesion = view.findViewById(R.id.btnCerrarSesion);
         btnCerrarSesion.setOnClickListener(v -> {
             JsonUtils.cerrarSesion(requireContext());
@@ -110,8 +118,7 @@ public class PedidosFragment extends Fragment {
 
         for (Pedido pedido : listaCompletaPedidos) {
             if (pedido.getNombreCliente().toLowerCase().contains(filtro)) {
-                View cardView = LayoutInflater.from(requireContext())
-                        .inflate(R.layout.item_pedido, listaPedidos, false);
+                View cardView = LayoutInflater.from(requireContext()).inflate(R.layout.item_pedido, listaPedidos, false);
 
                 TextView tvNombreCliente = cardView.findViewById(R.id.tvNombreCliente);
                 TextView tvTotal = cardView.findViewById(R.id.tvTotalPedido);
@@ -131,14 +138,12 @@ public class PedidosFragment extends Fragment {
 
                 listaPedidos.addView(cardView);
 
-                // Click normal
                 cardView.setOnClickListener(v -> {
                     Intent intent = new Intent(requireContext(), ResumenPedidoActivity.class);
                     intent.putExtra("id_pedido", pedido.getId());
                     startActivity(intent);
                 });
 
-                // Click largo: menú contextual
                 cardView.setOnLongClickListener(v -> {
                     int colorActual = tvDevolver.getCurrentTextColor();
                     int rojo = getResources().getColor(android.R.color.holo_red_dark);
@@ -168,4 +173,5 @@ public class PedidosFragment extends Fragment {
             }
         }
     }
+
 }
