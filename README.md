@@ -9,11 +9,11 @@
 - **Autenticacion**: registro e inicio de sesion mediante un sistema de usuarios almacenados localmente.
 - **Base de datos SQLite**: cada usuario tiene su propia base de datos con los productos, pedidos y detalles correspondientes.
 - **Navegacion inferior**: acceso directo a Pedidos, Inventario e Historial.
-- **Gestor de productos**: añadir, editar o eliminar art\u00edculos con soporte para imagenes desde la galer\u00eda o la camara.
+- **Gestor de productos**: añadir, editar o eliminar articulos con soporte para imagenes desde la galeria o la camara.
 - **Creacion de pedidos**: seleccionar productos, calcular el total y registrar el pago.
 - **Historial**: b\u00fasqueda por cliente y filtros por fecha, ademas de opciones para deshacer entregas o borrar pedidos.
 - **Exportacion/Importacion**: copia la base de datos para realizar backups o compartir los datos.
-- **Tutoriales**: cada pantalla muestra una gu\u00eda rapida la primera vez que se accede.
+- **Tutoriales**: cada pantalla muestra una guia rapida la primera vez que se accede.
 - **Easter Egg**: pulsa prolongadamente en la pantalla principal para descubrir un mensaje especial.
 
 ## Estructura del proyecto
@@ -58,5 +58,5 @@ El codigo esta organizado en paquetes que separan actividades, fragmentos, model
 
 ## Licencia
 
-Este proyecto se distribuye sin una licencia expl\u00edcita. Consulta con el autor antes de reutilizar el codigo.
+Este proyecto se distribuye sin una licencia explicita. Consulta con el autor antes de reutilizar el codigo.
 
