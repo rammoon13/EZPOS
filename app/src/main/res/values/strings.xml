@@ -10,4 +10,5 @@
     <string name="intro_agregar_producto">Introduce la informaci\u00f3n del producto y guarda.</string>
     <string name="intro_registro">Crea tu cuenta rellenando todos los campos y pulsa Registrarse.</string>
     <string name="intro_resumen_pedido">Revisa los detalles del pedido y registra el pago o entrega.</string>
+    <string name="label_today">Hoy</string>
 </resources>
