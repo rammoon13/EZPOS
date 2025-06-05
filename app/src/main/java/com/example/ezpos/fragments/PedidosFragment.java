@@ -27,6 +27,7 @@ import com.example.ezpos.ResumenPedidoActivity;
 import com.example.ezpos.database.DatabaseUtils;
 import com.example.ezpos.database.JsonUtils;
 import com.example.ezpos.database.Pedido;
+import com.example.ezpos.IntroHelper;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -62,6 +63,8 @@ public class PedidosFragment extends Fragment {
 
         listaPedidos = view.findViewById(R.id.listaPedidos);
         buscarHistorial = view.findViewById(R.id.buscarHistorial);
+
+        IntroHelper.showIntro(requireContext(), "pedidos", getString(R.string.intro_pedidos));
 
         buscarHistorial.addTextChangedListener(new TextWatcher() {
             @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}

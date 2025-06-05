@@ -26,6 +26,7 @@ import com.example.ezpos.database.DatabaseUtils;
 import com.example.ezpos.database.EZPOSSQLiteHelper;
 import com.example.ezpos.database.JsonUtils;
 import com.example.ezpos.database.Pedido;
+import com.example.ezpos.IntroHelper;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -58,6 +59,8 @@ public class HistorialFragment extends Fragment {
         fechaDesdeText = view.findViewById(R.id.fechaDesdeText);
         fechaHastaText = view.findViewById(R.id.fechaHastaText);
         btnLimpiarFechas = view.findViewById(R.id.btnLimpiarFechas);
+
+        IntroHelper.showIntro(requireContext(), "historial", getString(R.string.intro_historial));
 
         // Evita que se abra el teclado en los campos de fecha
         fechaDesdeText.setShowSoftInputOnFocus(false);

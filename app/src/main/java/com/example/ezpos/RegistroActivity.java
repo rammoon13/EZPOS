@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.ezpos.database.JsonUtils;
 import com.example.ezpos.database.Usuario;
+import com.example.ezpos.IntroHelper;
 
 import java.util.List;
 
@@ -33,6 +34,8 @@ public class RegistroActivity extends AppCompatActivity {
 
         Button btnRegistro = findViewById(R.id.btnRegistrarse);
         TextView tvIrLogin = findViewById(R.id.tvIrLogin);
+
+        IntroHelper.showIntro(this, "registro", getString(R.string.intro_registro));
 
         btnRegistro.setOnClickListener(v -> {
             String email = etEmail.getText().toString().trim();
