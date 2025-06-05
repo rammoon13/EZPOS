@@ -22,7 +22,7 @@ import java.io.File;
 
 public class ProductoCardViewBuilder {
 
-    public static View crear(Context context, Producto producto) {
+    public static View crear(Context context, Producto producto, Runnable onProductoEliminado) {
         LayoutInflater inflater = LayoutInflater.from(context);
         View view = inflater.inflate(R.layout.item_producto, null);
 
@@ -59,7 +59,9 @@ public class ProductoCardViewBuilder {
                     return true;
                 } else if (item.getItemId() == R.id.menu_eliminar) {
                     eliminarProducto(context, producto.getId());
-                    ((Activity) context).recreate();
+                    if (onProductoEliminado != null) {
+                        onProductoEliminado.run();
+                    }
                     return true;
                 }
                 return false;

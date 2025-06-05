@@ -208,7 +208,7 @@ public class InventarioFragment extends Fragment {
         String filtro = texto.toLowerCase();
 
         for (Producto producto : listaProductos) {
-            View card = ProductoCardViewBuilder.crear(requireContext(), producto);
+            View card = ProductoCardViewBuilder.crear(requireContext(), producto, this::mostrarProductos);
 
             card.setOnClickListener(v -> {
                 Intent intent = new Intent(requireContext(), AgregarProductoActivity.class);
