@@ -20,6 +20,7 @@ import androidx.cardview.widget.CardView;
 import com.example.ezpos.database.DatabaseUtils;
 import com.example.ezpos.database.EZPOSSQLiteHelper;
 import com.example.ezpos.database.Producto;
+import com.example.ezpos.IntroHelper;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -50,6 +51,8 @@ public class NuevoPedidoActivity extends AppCompatActivity {
         listaSeleccionados = findViewById(R.id.listaProductosSeleccionados);
         buscador = findViewById(R.id.etBuscarProducto);
         etNombreCliente = findViewById(R.id.etNombreCliente);
+
+        IntroHelper.showIntro(this, "nuevo_pedido", getString(R.string.intro_nuevo_pedido));
 
         Button btnCancelar = findViewById(R.id.btnCancelarPedido);
         btnCancelar.setOnClickListener(v -> {

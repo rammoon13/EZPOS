@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.ezpos.database.DatabaseUtils;
 import com.example.ezpos.database.EZPOSSQLiteHelper;
+import com.example.ezpos.IntroHelper;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -40,6 +41,8 @@ public class ResumenPedidoActivity extends AppCompatActivity {
         etPagado = findViewById(R.id.etPagado);
         etDevolver = findViewById(R.id.etDevolver);
         listaResumenProductos = findViewById(R.id.listaResumenProductos);
+
+        IntroHelper.showIntro(this, "resumen_pedido", getString(R.string.intro_resumen_pedido));
 
         nombreCliente = getIntent().getStringExtra("cliente");
         fechaHora = getIntent().getStringExtra("fecha");
