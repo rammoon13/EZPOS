@@ -1,10 +1,10 @@
 # EZPOS
 
-**EZPOS** es una aplicaci\u00f3n de punto de venta (POS) dise\u00f1ada para dispositivos Android. Permite gestionar pedidos, inventario y el historial de ventas desde una interfaz intuitiva y r\u00e1pida.
+**EZPOS** es una aplicacion de punto de venta (POS) dise\u00f1ada para dispositivos Android. Permite gestionar pedidos, inventario y el historial de ventas desde una interfaz intuitiva y r\u00e1pida.
 
 ![Logo](app/src/main/res/drawable/iconoezpos.png)
 
-## Caracter\u00edsticas principales
+## Caracteristicas principales
 
 - **Autenticaci\u00f3n**: registro e inicio de sesi\u00f3n mediante un sistema de usuarios almacenados localmente.
 - **Base de datos SQLite**: cada usuario tiene su propia base de datos con los productos, pedidos y detalles correspondientes.
