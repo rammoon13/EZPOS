@@ -54,7 +54,7 @@ El codigo esta organizado en paquetes que separan actividades, fragmentos, model
 
 ## Contribuciones
 
-\u00a1Las aportaciones son bienvenidas! Puedes enviar *pull requests* o crear *issues* con sugerencias y mejoras.
+Las aportaciones son bienvenidas! Puedes enviar *pull requests* o crear *issues* con sugerencias y mejoras.
 
 ## Licencia
 
