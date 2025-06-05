@@ -43,6 +43,7 @@ public class HistorialFragment extends Fragment {
     private EditText fechaDesdeText, fechaHastaText;
     private ImageButton btnLimpiarFechas;
     private List<Pedido> pedidos = new ArrayList<>();
+    private Map<String, Double> gananciasPorDia = new HashMap<>();
     private Calendar fechaDesde = null;
     private Calendar fechaHasta = null;
 
@@ -117,6 +118,12 @@ public class HistorialFragment extends Fragment {
         cargarPedidosDesdeBD();
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        cargarPedidosDesdeBD();
+    }
+
     private void actualizarVisibilidadBotonLimpiarFechas() {
         // Muestra u oculta el icono para borrar filtros de fecha
         if (fechaDesde == null && fechaHasta == null) {
@@ -129,11 +136,23 @@ public class HistorialFragment extends Fragment {
     private void cargarPedidosDesdeBD() {
         // Extrae todos los pedidos de la base de datos ordenados por fecha
         pedidos.clear();
+        gananciasPorDia.clear();
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         Cursor cursor = db.rawQuery("SELECT * FROM pedidos ORDER BY fecha_hora DESC", null);
         while (cursor.moveToNext()) {
             Pedido pedido = Pedido.fromCursor(cursor);
             pedidos.add(pedido);
+
+            try {
+                SimpleDateFormat formatoEntrada = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+                SimpleDateFormat formatoDia = new SimpleDateFormat("yyyyMMdd", Locale.getDefault());
+                Date fecha = formatoEntrada.parse(pedido.getFechaHora());
+                String dia = formatoDia.format(fecha);
+                double totalDia = gananciasPorDia.getOrDefault(dia, 0.0);
+                gananciasPorDia.put(dia, totalDia + pedido.getTotal());
+            } catch (ParseException e) {
+                // Ignorar errores de parseo para el calculo de ganancias
+            }
         }
         cursor.close();
         db.close();
@@ -200,16 +219,20 @@ public class HistorialFragment extends Fragment {
 
                     if (!diaActual.equals(ultimoDia)) {
                         ultimoDia = diaActual;
-                        TextView header = (TextView) inflater.inflate(R.layout.item_fecha_header, listaHistorial, false);
+                        View header = inflater.inflate(R.layout.item_fecha_header, listaHistorial, false);
+                        TextView tvFecha = header.findViewById(R.id.tvFechaHeader);
+                        TextView tvGanancias = header.findViewById(R.id.tvGananciasDia);
                         Calendar hoy = Calendar.getInstance();
                         Calendar calPedido = Calendar.getInstance();
                         calPedido.setTime(fecha);
                         if (calPedido.get(Calendar.YEAR) == hoy.get(Calendar.YEAR) &&
                                 calPedido.get(Calendar.DAY_OF_YEAR) == hoy.get(Calendar.DAY_OF_YEAR)) {
-                            header.setText(getString(R.string.label_today));
+                            tvFecha.setText(getString(R.string.label_today));
                         } else {
-                            header.setText(formatoCabecera.format(fecha));
+                            tvFecha.setText(formatoCabecera.format(fecha));
                         }
+                        double ganancia = gananciasPorDia.getOrDefault(diaActual, 0.0);
+                        tvGanancias.setText(String.format(Locale.getDefault(), "%.2f€", ganancia));
                         listaHistorial.addView(header);
                     }
                 } catch (ParseException e) {
