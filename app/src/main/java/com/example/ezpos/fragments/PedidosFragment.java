@@ -148,7 +148,7 @@ public class PedidosFragment extends Fragment {
         SimpleDateFormat formatoEntrada = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
         SimpleDateFormat formatoSalida = new SimpleDateFormat("dd-MM-yyyy HH:mm", Locale.getDefault());
         SimpleDateFormat formatoDia = new SimpleDateFormat("yyyyMMdd", Locale.getDefault());
-        SimpleDateFormat formatoCabecera = new SimpleDateFormat("dd 'de' MMMM yyyy", Locale.getDefault());
+        SimpleDateFormat formatoCabecera = new SimpleDateFormat("dd MMMM yyyy", Locale.getDefault());
 
         String ultimoDia = "";
 
