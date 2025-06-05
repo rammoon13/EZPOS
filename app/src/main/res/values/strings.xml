@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">EZPOS</string>
+    <string name="tutorial_title">Gu\u00eda r\u00e1pida</string>
+    <string name="intro_login">Bienvenido a EZPOS. Ingresa tus datos para acceder</string>
+    <string name="intro_home">Usa la barra inferior para navegar entre Pedidos, Inventario e Historial. Pulsa el bot\u00f3n de cerrar sesi\u00f3n para salir de tu cuenta.</string>
+    <string name="intro_pedidos">Aqu\u00ed puedes consultar pedidos y crear nuevos. Pulsa en un pedido para ver sus detalles y deja pulsado para entregar el cambio o el pedido. Utiliza el bot\u00f3n de cerrar sesi\u00f3n para salir.</string>
+    <string name="intro_inventario">Administra los productos disponibles. Pulsa un producto para ver sus detalles y mantenlo pulsado para editarlo o borrarlo. Desde el men\u00fa puedes exportar o importar la base de datos para compartirla. Usa el bot\u00f3n de cerrar sesi\u00f3n para salir.</string>
+    <string name="intro_historial">Filtra y revisa los pedidos ya entregados. Mant\u00e9n pulsado un pedido para deshacer la entrega o borrarlo. Usa el bot\u00f3n de cerrar sesi\u00f3n para salir.</string>
+    <string name="intro_nuevo_pedido">Selecciona productos y pulsa Continuar para registrar el pedido.</string>
+    <string name="intro_agregar_producto">Introduce la informaci\u00f3n del producto y guarda.</string>
+    <string name="intro_registro">Crea tu cuenta rellenando todos los campos y pulsa Registrarse.</string>
+    <string name="intro_resumen_pedido">Revisa los detalles del pedido y registra el pago o entrega.</string>
+</resources>
