@@ -29,6 +29,9 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.IOException;
 
+// Gestiona la creación y edición de productos. El mismo layout sirve para
+// mostrar información o para modificarla según se indique.
+
 public class AgregarProductoActivity extends AppCompatActivity {
 
     ImageButton btnImagen;
@@ -42,6 +45,10 @@ public class AgregarProductoActivity extends AppCompatActivity {
     private Uri uriFotoCamara = null;
     private boolean soloLectura = false;
 
+    /**
+     * Configura la pantalla según si se trata de un producto nuevo o existente.
+     * También prepara los botones para seleccionar imagen y guardar los cambios.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -104,6 +111,7 @@ public class AgregarProductoActivity extends AppCompatActivity {
     }
 
     private void desactivarEdicion() {
+        // Deshabilita campos para mostrar el producto en modo solo lectura
         etNombre.setEnabled(false);
         etCantidad.setEnabled(false);
         etPrecio.setEnabled(false);
@@ -113,6 +121,7 @@ public class AgregarProductoActivity extends AppCompatActivity {
     }
 
     private void mostrarMenuImagen() {
+        // Permite elegir la imagen desde galería o cámara guardando el resultado
         PopupMenu menu = new PopupMenu(this, btnImagen);
         menu.getMenu().add("Elegir de galería").setOnMenuItemClickListener(item -> {
             Intent intent = new Intent(Intent.ACTION_PICK);
@@ -141,6 +150,7 @@ public class AgregarProductoActivity extends AppCompatActivity {
     }
 
     private void agregarProducto() {
+        // Valida los campos y guarda o actualiza el registro en SQLite
         String nombre = etNombre.getText().toString().trim();
         String cantidadStr = etCantidad.getText().toString().trim();
         String precioStr = etPrecio.getText().toString().trim();
@@ -194,6 +204,7 @@ public class AgregarProductoActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        // Recibe la foto tomada o seleccionada y la guarda en local
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
             if (requestCode == REQUEST_GALERIA && data != null) {
@@ -225,6 +236,7 @@ public class AgregarProductoActivity extends AppCompatActivity {
     }
 
     private String guardarImagenLocal(Bitmap bitmap) {
+        // Guarda la imagen tomada en la memoria interna y devuelve su ruta
         try {
             File directorio = new File(getFilesDir(), "imagenes_productos");
             if (!directorio.exists()) {
@@ -244,6 +256,7 @@ public class AgregarProductoActivity extends AppCompatActivity {
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        // Notifica al usuario si se deniega el permiso de la cámara
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == 100 && grantResults.length > 0 && grantResults[0] != PackageManager.PERMISSION_GRANTED) {
             Toast.makeText(this, "Permiso de cámara denegado", Toast.LENGTH_SHORT).show();

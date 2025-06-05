@@ -1,3 +1,6 @@
+/**
+ * Utilidades para guardar y leer los usuarios y la sesión en ficheros JSON.
+ */
 package com.example.ezpos.database;
 
 import android.content.Context;
@@ -16,6 +19,7 @@ public class JsonUtils {
     private static final Gson gson = new Gson();
 
     public static List<Usuario> cargarUsuarios(Context context) {
+        // Lee el fichero de usuarios. Si no existe devuelve una lista vacía
         try {
             File file = new File(context.getFilesDir(), USER_FILE);
             if (!file.exists()) return new ArrayList<>();
@@ -29,6 +33,7 @@ public class JsonUtils {
     }
 
     public static void guardarUsuarios(Context context, List<Usuario> usuarios) {
+        // Guarda la lista completa de usuarios en disco
         try {
             FileWriter writer = new FileWriter(new File(context.getFilesDir(), USER_FILE));
             gson.toJson(usuarios, writer);
@@ -40,6 +45,7 @@ public class JsonUtils {
     }
 
     public static void guardarSesion(Context context, Usuario usuario) {
+        // Almacena la sesión actual en un fichero independiente
         try {
             FileWriter writer = new FileWriter(new File(context.getFilesDir(), SESSION_FILE));
             gson.toJson(usuario, writer);
@@ -51,6 +57,7 @@ public class JsonUtils {
     }
 
     public static Usuario cargarSesion(Context context) {
+        // Devuelve la sesión guardada o null si no existe
         try {
             File file = new File(context.getFilesDir(), SESSION_FILE);
             if (!file.exists()) return null;
@@ -62,6 +69,7 @@ public class JsonUtils {
     }
 
     public static void cerrarSesion(Context context) {
+        // Simplemente elimina el fichero de sesión
         File file = new File(context.getFilesDir(), SESSION_FILE);
         if (file.exists()) file.delete();
     }

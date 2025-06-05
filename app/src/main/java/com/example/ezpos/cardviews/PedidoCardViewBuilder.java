@@ -1,3 +1,6 @@
+/**
+ * Constructor de tarjetas de pedidos para listas simples.
+ */
 package com.example.ezpos.cardviews;
 
 import android.content.Context;
@@ -11,6 +14,7 @@ import com.example.ezpos.database.Pedido;
 public class PedidoCardViewBuilder {
 
     public static View crear(Context context, Pedido pedido) {
+        // Infla una tarjeta con la información resumida del pedido
         LayoutInflater inflater = LayoutInflater.from(context);
         View view = inflater.inflate(R.layout.item_pedido, null);
 

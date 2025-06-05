@@ -29,6 +29,10 @@ import org.json.JSONObject;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.*;
+/**
+ * Actividad para seleccionar productos y componer un nuevo pedido.
+ * Maneja tanto la interfaz de búsqueda como el control de stock temporal.
+ */
 
 public class NuevoPedidoActivity extends AppCompatActivity {
 
@@ -42,6 +46,10 @@ public class NuevoPedidoActivity extends AppCompatActivity {
     private String nombreCliente = "Cliente Genérico";
 
     @Override
+    /**
+     * Inicializa los listados y carga los productos desde la base de datos.
+     * Al cerrar sin confirmar se revierte el stock descontado temporalmente.
+     */
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_nuevo_pedido);
@@ -102,6 +110,7 @@ public class NuevoPedidoActivity extends AppCompatActivity {
     }
 
     private void cargarProductosDesdeBD() {
+        // Lee todos los productos de la base de datos para mostrarlos al usuario
         productosDisponibles.clear();
         productosFiltrados.clear();
 
@@ -128,6 +137,7 @@ public class NuevoPedidoActivity extends AppCompatActivity {
     }
 
     private void filtrarProductos(String texto) {
+        // Filtra la lista al escribir en el buscador
         listaProductos.removeAllViews();
         String filtro = texto.toLowerCase();
 
@@ -139,6 +149,7 @@ public class NuevoPedidoActivity extends AppCompatActivity {
     }
 
     private View crearTarjetaProducto(Producto producto) {
+        // Genera dinámicamente la vista de cada producto disponible
         View cardView = getLayoutInflater().inflate(R.layout.card_producto_disponible, null);
         TextView txtNombre = cardView.findViewById(R.id.txtNombreProducto);
         TextView txtCantidad = cardView.findViewById(R.id.txtCantidadDisponible);
@@ -173,6 +184,7 @@ public class NuevoPedidoActivity extends AppCompatActivity {
     }
 
     private void actualizarListaSeleccionados() {
+        // Muestra y permite deshacer productos añadidos al pedido
         listaSeleccionados.removeAllViews();
         for (int id : productosSeleccionados.keySet()) {
             int cantidad = productosSeleccionados.get(id);
@@ -205,18 +217,21 @@ public class NuevoPedidoActivity extends AppCompatActivity {
     }
 
     private void reducirStock(int idProducto) {
+        // Descuenta una unidad en la base de datos al seleccionar un producto
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         db.execSQL("UPDATE productos SET cantidad = cantidad - 1 WHERE id = ?", new Object[]{idProducto});
         db.close();
     }
 
     private void sumarStock(int idProducto) {
+        // Restaura el stock cuando se elimina un producto del pedido
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         db.execSQL("UPDATE productos SET cantidad = cantidad + 1 WHERE id = ?", new Object[]{idProducto});
         db.close();
     }
 
     private void revertirStock() {
+        // Devuelve el stock a su valor original si se cancela el pedido
         for (int id : productosSeleccionados.keySet()) {
             int cantidad = productosSeleccionados.get(id);
             for (int i = 0; i < cantidad; i++) {
@@ -228,6 +243,7 @@ public class NuevoPedidoActivity extends AppCompatActivity {
     }
 
     private String obtenerFechaHoraActual() {
+        // Utilidad para almacenar la hora de creación del pedido
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
         return sdf.format(new Date());
     }

@@ -1,3 +1,6 @@
+/**
+ * Fragmento para consultar el historial completo de pedidos con filtros por fecha.
+ */
 package com.example.ezpos.fragments;
 
 import android.app.DatePickerDialog;
@@ -46,6 +49,7 @@ public class HistorialFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        // Layout con filtros y lista de ventas antiguas
         return inflater.inflate(R.layout.fragment_historial, container, false);
     }
 
@@ -101,6 +105,7 @@ public class HistorialFragment extends Fragment {
             }
         });
 
+        // Filtro en tiempo real por nombre de cliente
         buscarHistorial.addTextChangedListener(new TextWatcher() {
             @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
             @Override public void onTextChanged(CharSequence s, int start, int before, int count) {
@@ -113,6 +118,7 @@ public class HistorialFragment extends Fragment {
     }
 
     private void actualizarVisibilidadBotonLimpiarFechas() {
+        // Muestra u oculta el icono para borrar filtros de fecha
         if (fechaDesde == null && fechaHasta == null) {
             btnLimpiarFechas.setVisibility(View.GONE);
         } else {
@@ -121,6 +127,7 @@ public class HistorialFragment extends Fragment {
     }
 
     private void cargarPedidosDesdeBD() {
+        // Extrae todos los pedidos de la base de datos ordenados por fecha
         pedidos.clear();
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         Cursor cursor = db.rawQuery("SELECT * FROM pedidos ORDER BY fecha_hora DESC", null);
@@ -134,6 +141,7 @@ public class HistorialFragment extends Fragment {
     }
 
     private void mostrarPedidosFiltrados(String filtro) {
+        // Muestra sólo los pedidos que cumplen el filtro de texto y fecha
         listaHistorial.removeAllViews();
 
         LayoutInflater inflater = LayoutInflater.from(requireContext());
@@ -214,6 +222,7 @@ public class HistorialFragment extends Fragment {
     }
 
     private View crearCardPedido(Pedido pedido) {
+        // Genera la tarjeta con las acciones para cada pedido
         LayoutInflater inflater = LayoutInflater.from(requireContext());
         View card = inflater.inflate(R.layout.card_pedido, null);
 
@@ -280,6 +289,7 @@ public class HistorialFragment extends Fragment {
     }
 
     private void mostrarSelectorFecha(boolean esDesde) {
+        // Diálogo de calendario para establecer rango de fechas
         Calendar calendario = Calendar.getInstance();
         DatePickerDialog datePicker = new DatePickerDialog(requireContext(),
                 (view, year, month, dayOfMonth) -> {

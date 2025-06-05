@@ -1,3 +1,6 @@
+/**
+ * Modelo de los registros guardados en la tabla de historial.
+ */
 package com.example.ezpos.database;
 
 public class Historial {

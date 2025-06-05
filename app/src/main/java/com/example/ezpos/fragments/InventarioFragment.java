@@ -1,3 +1,6 @@
+/**
+ * Fragmento que muestra y gestiona el inventario de productos.
+ */
 package com.example.ezpos.fragments;
 
 import android.content.Intent;
@@ -54,6 +57,7 @@ public class InventarioFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater,
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
+        // Infla el layout con la lista de productos
         View view = inflater.inflate(R.layout.fragment_inventario, container, false);
 
         Button btnAgregarProducto = view.findViewById(R.id.btnAgregarProducto);
@@ -74,6 +78,7 @@ public class InventarioFragment extends Fragment {
 
         IntroHelper.showIntro(requireContext(), "inventario", getString(R.string.intro_inventario));
 
+        // Filtrado en tiempo real al escribir en el buscador
         buscador.addTextChangedListener(new TextWatcher() {
             @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
             @Override public void afterTextChanged(Editable s) {}
@@ -114,6 +119,7 @@ public class InventarioFragment extends Fragment {
     }
 
     private void configurarLaunchers() {
+        // Prepara los intents para exportar e importar la base de datos
         exportarLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
@@ -167,6 +173,7 @@ public class InventarioFragment extends Fragment {
     }
 
     private void exportarBaseDeDatos() {
+        // Permite escoger destino para la copia de seguridad
         Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
         intent.setType("*/*");
         intent.putExtra(Intent.EXTRA_TITLE, "ezpos.db");
@@ -174,6 +181,7 @@ public class InventarioFragment extends Fragment {
     }
 
     private void importarBaseDeDatos() {
+        // Selecciona un archivo y lo copia sobre la base de datos actual
         Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
         intent.setType("*/*");
         intent.addCategory(Intent.CATEGORY_OPENABLE);
@@ -181,6 +189,7 @@ public class InventarioFragment extends Fragment {
     }
 
     private void mostrarProductos() {
+        // Carga todos los productos de la base de datos
         listaProductos.clear();
 
         SQLiteDatabase db = DatabaseUtils.getDatabaseHelper(requireContext()).getReadableDatabase();
@@ -204,6 +213,7 @@ public class InventarioFragment extends Fragment {
     }
 
     private void filtrarProductos(String texto) {
+        // Genera las tarjetas solo de los productos que coincidan con el filtro
         contenedor.removeAllViews();
         String filtro = texto.toLowerCase();
 

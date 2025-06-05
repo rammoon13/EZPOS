@@ -15,10 +15,20 @@ import com.example.ezpos.IntroHelper;
 
 import java.util.List;
 
+/**
+ * Pantalla inicial de login. Comprueba si hay una sesión guardada y, en caso
+ * afirmativo, pasa directamente a {@link HomeActivity}. En caso contrario
+ * muestra el formulario de acceso.
+ */
 public class MainActivity extends AppCompatActivity {
 
     private EditText etUsuario, etPassword, etAsociacion;
 
+    /**
+     * Inicializa la pantalla de login. Si detecta una sesión activa redirige al
+     * usuario al menú principal, en caso contrario prepara los campos y
+     * listeners para iniciar sesión o registrarse.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
 
         IntroHelper.showIntro(this, "login", getString(R.string.intro_login));
 
-        // Botón de login
+        // Botón de login: valida credenciales localmente guardadas en JSON
         btnLogin.setOnClickListener(v -> {
             String usuario = etUsuario.getText().toString().trim();
             String password = etPassword.getText().toString().trim();
@@ -69,7 +79,7 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this, "Credenciales incorrectas", Toast.LENGTH_SHORT).show();
         });
 
-        // Link a registro
+        // Link a registro: permite crear un nuevo usuario
         tvIrRegistro.setOnClickListener(v -> {
             startActivity(new Intent(MainActivity.this, RegistroActivity.class));
         });
