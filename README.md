@@ -11,7 +11,7 @@
 - **Navegacion inferior**: acceso directo a Pedidos, Inventario e Historial.
 - **Gestor de productos**: añadir, editar o eliminar articulos con soporte para imagenes desde la galeria o la camara.
 - **Creacion de pedidos**: seleccionar productos, calcular el total y registrar el pago.
-- **Historial**: b\u00fasqueda por cliente y filtros por fecha, ademas de opciones para deshacer entregas o borrar pedidos.
+- **Historial**: busqueda por cliente y filtros por fecha, ademas de opciones para deshacer entregas o borrar pedidos.
 - **Exportacion/Importacion**: copia la base de datos para realizar backups o compartir los datos.
 - **Tutoriales**: cada pantalla muestra una guia rapida la primera vez que se accede.
 - **Easter Egg**: pulsa prolongadamente en la pantalla principal para descubrir un mensaje especial.
@@ -47,7 +47,7 @@ El codigo esta organizado en paquetes que separan actividades, fragmentos, model
 ## Uso basico
 
 1. **Registro**: crea un usuario desde la pantalla de registro.
-2. **Inicio de sesion**: ingresa tus credenciales para acceder al men\u00fa principal.
+2. **Inicio de sesion**: ingresa tus credenciales para acceder al menu principal.
 3. **Pedidos**: consulta pedidos pendientes o crea uno nuevo.
 4. **Inventario**: administra productos y exporta/importa la base de datos si es necesario.
 5. **Historial**: revisa ventas anteriores y filtra por fecha o cliente.
