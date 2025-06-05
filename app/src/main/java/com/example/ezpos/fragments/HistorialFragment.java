@@ -152,10 +152,32 @@ public class HistorialFragment extends Fragment {
                     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
                     Date fechaPedido = sdf.parse(p.getFechaHora());
 
-                    if (fechaDesde != null && fechaPedido.before(fechaDesde.getTime())) {
+                    Calendar desde = null;
+                    Calendar hasta = null;
+
+                    if (fechaDesde != null) {
+                        desde = (Calendar) fechaDesde.clone();
+                    }
+                    if (fechaHasta != null) {
+                        hasta = (Calendar) fechaHasta.clone();
+                    }
+
+                    if (fechaDesde != null && fechaHasta == null) {
+                        hasta = (Calendar) fechaDesde.clone();
+                        hasta.set(Calendar.HOUR_OF_DAY, 23);
+                        hasta.set(Calendar.MINUTE, 59);
+                        hasta.set(Calendar.SECOND, 59);
+                    } else if (fechaHasta != null && fechaDesde == null) {
+                        desde = (Calendar) fechaHasta.clone();
+                        desde.set(Calendar.HOUR_OF_DAY, 0);
+                        desde.set(Calendar.MINUTE, 0);
+                        desde.set(Calendar.SECOND, 0);
+                    }
+
+                    if (desde != null && fechaPedido.before(desde.getTime())) {
                         pasaFiltroFecha = false;
                     }
-                    if (fechaHasta != null && fechaPedido.after(fechaHasta.getTime())) {
+                    if (hasta != null && fechaPedido.after(hasta.getTime())) {
                         pasaFiltroFecha = false;
                     }
                 } catch (ParseException e) {
