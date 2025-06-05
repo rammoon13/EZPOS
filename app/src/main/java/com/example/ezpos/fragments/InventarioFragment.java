@@ -30,6 +30,7 @@ import com.example.ezpos.R;
 import com.example.ezpos.database.DatabaseUtils;
 import com.example.ezpos.database.JsonUtils;
 import com.example.ezpos.database.Producto;
+import com.example.ezpos.IntroHelper;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -70,6 +71,8 @@ public class InventarioFragment extends Fragment {
 
         contenedor = view.findViewById(R.id.listaInventario);
         buscador = view.findViewById(R.id.buscarHistorial);
+
+        IntroHelper.showIntro(requireContext(), "inventario", getString(R.string.intro_inventario));
 
         buscador.addTextChangedListener(new TextWatcher() {
             @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}

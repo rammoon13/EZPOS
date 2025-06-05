@@ -22,6 +22,7 @@ import androidx.core.content.FileProvider;
 
 import com.example.ezpos.database.DatabaseUtils;
 import com.example.ezpos.database.EZPOSSQLiteHelper;
+import com.example.ezpos.IntroHelper;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -53,6 +54,8 @@ public class AgregarProductoActivity extends AppCompatActivity {
         etDescripcion = findViewById(R.id.etDescripcion);
         btnAgregar = findViewById(R.id.btnAgregar);
         tvTitulo = findViewById(R.id.tvTituloProducto); // Título dinámico
+
+        IntroHelper.showIntro(this, "agregar_producto", getString(R.string.intro_agregar_producto));
 
         Button btnAtras = findViewById(R.id.btnAtras);
         btnAtras.setOnClickListener(v -> finish());

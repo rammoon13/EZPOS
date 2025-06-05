@@ -10,6 +10,7 @@ import com.example.ezpos.fragments.HistorialFragment;
 import com.example.ezpos.fragments.InventarioFragment;
 import com.example.ezpos.fragments.PedidosFragment;
 import com.example.ezpos.EasterEgg;
+import com.example.ezpos.IntroHelper;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class HomeActivity extends AppCompatActivity {
@@ -17,6 +18,8 @@ public class HomeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        IntroHelper.showIntro(this, "home", getString(R.string.intro_home));
 
         BottomNavigationView bottomNav = findViewById(R.id.bottom_nav);
         FrameLayout pantalla = findViewById(R.id.fragment_container);
