@@ -288,9 +288,17 @@ public class HistorialFragment extends Fragment {
                     SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
 
                     if (esDesde) {
+                        if (fechaHasta != null && seleccionada.after(fechaHasta)) {
+                            Toast.makeText(requireContext(), R.string.error_fecha_desde_posterior, Toast.LENGTH_SHORT).show();
+                            return;
+                        }
                         fechaDesde = seleccionada;
                         fechaDesdeText.setText(sdf.format(seleccionada.getTime()));
                     } else {
+                        if (fechaDesde != null && seleccionada.before(fechaDesde)) {
+                            Toast.makeText(requireContext(), R.string.error_fecha_hasta_anterior, Toast.LENGTH_SHORT).show();
+                            return;
+                        }
                         fechaHasta = seleccionada;
                         seleccionada.set(Calendar.HOUR_OF_DAY, 23);
                         seleccionada.set(Calendar.MINUTE, 59);
