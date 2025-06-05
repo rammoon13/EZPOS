@@ -135,6 +135,14 @@ public class HistorialFragment extends Fragment {
 
     private void mostrarPedidosFiltrados(String filtro) {
         listaHistorial.removeAllViews();
+
+        LayoutInflater inflater = LayoutInflater.from(requireContext());
+        SimpleDateFormat formatoEntrada = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+        SimpleDateFormat formatoDia = new SimpleDateFormat("yyyyMMdd", Locale.getDefault());
+        SimpleDateFormat formatoCabecera = new SimpleDateFormat("dd 'de' MMMM yyyy", Locale.getDefault());
+
+        String ultimoDia = "";
+
         for (Pedido p : pedidos) {
             boolean pasaFiltroTexto = p.getNombreCliente().toLowerCase().contains(filtro.toLowerCase());
 
@@ -156,6 +164,28 @@ public class HistorialFragment extends Fragment {
             }
 
             if (pasaFiltroTexto && pasaFiltroFecha) {
+                try {
+                    Date fecha = formatoEntrada.parse(p.getFechaHora());
+                    String diaActual = formatoDia.format(fecha);
+
+                    if (!diaActual.equals(ultimoDia)) {
+                        ultimoDia = diaActual;
+                        TextView header = (TextView) inflater.inflate(R.layout.item_fecha_header, listaHistorial, false);
+                        Calendar hoy = Calendar.getInstance();
+                        Calendar calPedido = Calendar.getInstance();
+                        calPedido.setTime(fecha);
+                        if (calPedido.get(Calendar.YEAR) == hoy.get(Calendar.YEAR) &&
+                                calPedido.get(Calendar.DAY_OF_YEAR) == hoy.get(Calendar.DAY_OF_YEAR)) {
+                            header.setText(getString(R.string.label_today));
+                        } else {
+                            header.setText(formatoCabecera.format(fecha));
+                        }
+                        listaHistorial.addView(header);
+                    }
+                } catch (ParseException e) {
+                    // Ignorar errores de formato y no mostrar cabecera
+                }
+
                 listaHistorial.addView(crearCardPedido(p));
             }
         }

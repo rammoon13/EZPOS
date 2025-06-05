@@ -120,6 +120,14 @@ public class PedidosFragment extends Fragment {
         listaPedidos.removeAllViews();
         String filtro = texto.toLowerCase();
 
+        LayoutInflater inflater = LayoutInflater.from(requireContext());
+        SimpleDateFormat formatoEntrada = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+        SimpleDateFormat formatoSalida = new SimpleDateFormat("dd-MM-yyyy HH:mm", Locale.getDefault());
+        SimpleDateFormat formatoDia = new SimpleDateFormat("yyyyMMdd", Locale.getDefault());
+        SimpleDateFormat formatoCabecera = new SimpleDateFormat("dd 'de' MMMM yyyy", Locale.getDefault());
+
+        String ultimoDia = "";
+
         for (Pedido pedido : listaCompletaPedidos) {
             if (pedido.getNombreCliente().toLowerCase().contains(filtro)) {
                 View cardView = LayoutInflater.from(requireContext()).inflate(R.layout.item_pedido, listaPedidos, false);
@@ -130,10 +138,9 @@ public class PedidosFragment extends Fragment {
                 TextView tvDevolver = cardView.findViewById(R.id.tvADevolverPedido);
 
                 String fechaFormateada;
+                Date fecha = null;
                 try {
-                    SimpleDateFormat formatoEntrada = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
-                    SimpleDateFormat formatoSalida = new SimpleDateFormat("dd-MM-yyyy HH:mm", Locale.getDefault());
-                    Date fecha = formatoEntrada.parse(pedido.getFechaHora());
+                    fecha = formatoEntrada.parse(pedido.getFechaHora());
                     fechaFormateada = formatoSalida.format(fecha);
                 } catch (ParseException e) {
                     fechaFormateada = pedido.getFechaHora(); // en caso de error
@@ -148,6 +155,24 @@ public class PedidosFragment extends Fragment {
                     tvDevolver.setTextColor(getResources().getColor(android.R.color.holo_green_dark));
                 } else {
                     tvDevolver.setTextColor(getResources().getColor(android.R.color.holo_red_dark));
+                }
+
+                if (fecha != null) {
+                    String diaActual = formatoDia.format(fecha);
+                    if (!diaActual.equals(ultimoDia)) {
+                        ultimoDia = diaActual;
+                        TextView header = (TextView) inflater.inflate(R.layout.item_fecha_header, listaPedidos, false);
+                        Calendar hoy = Calendar.getInstance();
+                        Calendar calPedido = Calendar.getInstance();
+                        calPedido.setTime(fecha);
+                        if (calPedido.get(Calendar.YEAR) == hoy.get(Calendar.YEAR) &&
+                                calPedido.get(Calendar.DAY_OF_YEAR) == hoy.get(Calendar.DAY_OF_YEAR)) {
+                            header.setText(getString(R.string.label_today));
+                        } else {
+                            header.setText(formatoCabecera.format(fecha));
+                        }
+                        listaPedidos.addView(header);
+                    }
                 }
 
                 listaPedidos.addView(cardView);
