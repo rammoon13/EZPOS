@@ -1,3 +1,6 @@
+/**
+ * POJO que almacena la información de un producto del inventario.
+ */
 package com.example.ezpos.database;
 
 public class Producto {

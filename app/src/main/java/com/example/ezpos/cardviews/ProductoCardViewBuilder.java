@@ -1,3 +1,6 @@
+/**
+ * Utilidad para construir la vista de un producto con menú contextual.
+ */
 package com.example.ezpos.cardviews;
 
 import android.app.Activity;
@@ -23,6 +26,7 @@ import java.io.File;
 public class ProductoCardViewBuilder {
 
     public static View crear(Context context, Producto producto, Runnable onProductoEliminado) {
+        // Infla el layout de la tarjeta y asigna acciones de editar/eliminar
         LayoutInflater inflater = LayoutInflater.from(context);
         View view = inflater.inflate(R.layout.item_producto, null);
 
@@ -75,6 +79,7 @@ public class ProductoCardViewBuilder {
     }
 
     private static void eliminarProducto(Context context, int idProducto) {
+        // Eliminación directa en SQLite y aviso al usuario
         EZPOSSQLiteHelper dbHelper = DatabaseUtils.getDatabaseHelper(context);
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         int filas = db.delete("productos", "id = ?", new String[]{String.valueOf(idProducto)});

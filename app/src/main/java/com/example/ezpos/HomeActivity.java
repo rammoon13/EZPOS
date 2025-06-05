@@ -12,9 +12,16 @@ import com.example.ezpos.fragments.PedidosFragment;
 import com.example.ezpos.EasterEgg;
 import com.example.ezpos.IntroHelper;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+/**
+ * Actividad principal tras el login. Gestiona los fragmentos de Pedidos,
+ * Inventario e Historial mediante la barra inferior de navegación.
+ */
 
 public class HomeActivity extends AppCompatActivity {
     @Override
+    /**
+     * Carga el layout principal y configura la navegación entre fragmentos.
+     */
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -30,6 +37,7 @@ public class HomeActivity extends AppCompatActivity {
             return true;
         });
 
+        // Cambia el fragmento mostrado según el elemento seleccionado
         bottomNav.setOnItemSelectedListener(item -> {
             Fragment selectedFragment = null;
 

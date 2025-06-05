@@ -1,3 +1,6 @@
+/**
+ * Datos básicos de los usuarios que pueden iniciar sesión en la app.
+ */
 package com.example.ezpos.database;
 
 public class Usuario {

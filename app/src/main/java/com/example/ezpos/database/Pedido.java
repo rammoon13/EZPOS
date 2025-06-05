@@ -1,3 +1,6 @@
+/**
+ * Representa un pedido con su lista de productos y estado de entrega.
+ */
 package com.example.ezpos.database;
 
 import android.database.Cursor;

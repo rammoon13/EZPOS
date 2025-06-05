@@ -20,6 +20,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.*;
+/**
+ * Muestra el resumen del pedido antes de confirmarlo y guarda la información
+ * en la base de datos. También permite visualizar pedidos antiguos.
+ */
 
 public class ResumenPedidoActivity extends AppCompatActivity {
 
@@ -31,6 +35,10 @@ public class ResumenPedidoActivity extends AppCompatActivity {
     String fechaHora;
 
     @Override
+    /**
+     * Si recibe un id de pedido lo muestra en modo lectura, de lo contrario
+     * permite confirmar uno nuevo y guardarlo en SQLite.
+     */
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_resumen_pedido);
@@ -74,6 +82,7 @@ public class ResumenPedidoActivity extends AppCompatActivity {
     }
 
     private void mostrarProductosSeleccionados() {
+        // Crea dinámicamente la lista de productos elegidos en el paso anterior
         listaResumenProductos.removeAllViews();
         totalPedido = 0;
 
@@ -109,6 +118,7 @@ public class ResumenPedidoActivity extends AppCompatActivity {
     }
 
     private void calcularCambio() {
+        // Calcula el dinero a devolver cuando se introduce el importe pagado
         String pagadoStr = etPagado.getText().toString().trim();
         if (!pagadoStr.isEmpty()) {
             try {
@@ -124,6 +134,7 @@ public class ResumenPedidoActivity extends AppCompatActivity {
     }
 
     private void confirmarPedido() {
+        // Inserta el pedido en la base de datos y sus detalles asociados
         try {
             JSONArray productos = new JSONArray(getIntent().getStringExtra("productos_seleccionados"));
 
@@ -187,6 +198,7 @@ public class ResumenPedidoActivity extends AppCompatActivity {
         }
     }
     private void cargarDatosPedidoExistente(int idPedido) {
+        // Cuando se consulta un pedido pasado, se rellenan los campos con sus valores
         EZPOSSQLiteHelper dbHelper = DatabaseUtils.getDatabaseHelper(this);
         SQLiteDatabase db = dbHelper.getReadableDatabase();
 
@@ -240,6 +252,7 @@ public class ResumenPedidoActivity extends AppCompatActivity {
 
     }
     private void mostrarProductosResumen(JSONArray productos) {
+        // Utilizado al abrir un pedido del historial para mostrar su detalle
         listaResumenProductos.removeAllViews();
         totalPedido = 0;
 

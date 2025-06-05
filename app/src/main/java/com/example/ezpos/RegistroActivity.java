@@ -14,12 +14,19 @@ import com.example.ezpos.database.Usuario;
 import com.example.ezpos.IntroHelper;
 
 import java.util.List;
+/**
+ * Formulario de alta de usuarios almacenados en un fichero JSON local.
+ */
 
 public class RegistroActivity extends AppCompatActivity {
 
     private EditText etEmail, etNombreCompleto, etNombreUsuario, etAsociacion, etPassword, etConfirmar;
 
     @Override
+    /**
+     * Prepara el formulario de registro y guarda el nuevo usuario si los datos
+     * son válidos.
+     */
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registro);
@@ -37,6 +44,7 @@ public class RegistroActivity extends AppCompatActivity {
 
         IntroHelper.showIntro(this, "registro", getString(R.string.intro_registro));
 
+        // Guarda los datos si el usuario no existe previamente
         btnRegistro.setOnClickListener(v -> {
             String email = etEmail.getText().toString().trim();
             String nombreCompleto = etNombreCompleto.getText().toString().trim();
@@ -73,6 +81,7 @@ public class RegistroActivity extends AppCompatActivity {
             finish();
         });
 
-        tvIrLogin.setOnClickListener(v -> finish()); // Volver al login
+        // Botón para volver a la pantalla de inicio de sesión
+        tvIrLogin.setOnClickListener(v -> finish());
     }
 }

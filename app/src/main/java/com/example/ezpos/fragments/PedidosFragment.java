@@ -1,3 +1,6 @@
+/**
+ * Fragmento que muestra los pedidos pendientes y permite iniciar uno nuevo.
+ */
 package com.example.ezpos.fragments;
 
 import android.content.Intent;
@@ -48,6 +51,7 @@ public class PedidosFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater,
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
+        // Infla el layout con la lista de pedidos
         View view = inflater.inflate(R.layout.fragment_pedidos, container, false);
 
         view.findViewById(R.id.btnIniciarPedido).setOnClickListener(v -> {
@@ -67,6 +71,7 @@ public class PedidosFragment extends Fragment {
 
         IntroHelper.showIntro(requireContext(), "pedidos", getString(R.string.intro_pedidos));
 
+        // Filtro de búsqueda por nombre de cliente
         buscarHistorial.addTextChangedListener(new TextWatcher() {
             @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
             @Override public void afterTextChanged(Editable s) {}
@@ -92,6 +97,7 @@ public class PedidosFragment extends Fragment {
     }
 
     private void cargarPedidosDesdeBD() {
+        // Consulta los pedidos no entregados de la base de datos
         listaCompletaPedidos.clear();
 
         SQLiteDatabase db = DatabaseUtils.getDatabaseHelper(requireContext()).getReadableDatabase();
@@ -118,6 +124,7 @@ public class PedidosFragment extends Fragment {
     }
 
     private void filtrarPedidos(String texto) {
+        // Ordena y agrupa los pedidos por día aplicando el filtro de texto
         listaPedidos.removeAllViews();
         String filtro = texto.toLowerCase();
 

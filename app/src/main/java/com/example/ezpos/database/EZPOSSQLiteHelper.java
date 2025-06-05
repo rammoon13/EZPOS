@@ -1,3 +1,6 @@
+/**
+ * Helper de SQLite que crea y actualiza las tablas principales de la aplicación.
+ */
 package com.example.ezpos.database;
 
 import android.content.Context;
@@ -6,12 +9,16 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class EZPOSSQLiteHelper extends SQLiteOpenHelper {
 
+    /**
+     * Recibe el nombre de la base para cada usuario y versiona el esquema.
+     */
     public EZPOSSQLiteHelper(Context context, String nombreDB) {
         super(context, nombreDB, null, 9);
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
+        // Se crean todas las tablas necesarias la primera vez
         db.execSQL("CREATE TABLE productos (" +
                 "id INTEGER PRIMARY KEY AUTOINCREMENT," +
                 "nombre TEXT NOT NULL," +
@@ -50,6 +57,7 @@ public class EZPOSSQLiteHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        // Estrategia simple: eliminar todo y volver a crear
         db.execSQL("DROP TABLE IF EXISTS productos;");
         db.execSQL("DROP TABLE IF EXISTS pedidos;");
         db.execSQL("DROP TABLE IF EXISTS detalle_pedido;");
