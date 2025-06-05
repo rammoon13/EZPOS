@@ -11,4 +11,6 @@
     <string name="intro_registro">Crea tu cuenta rellenando todos los campos y pulsa Registrarse.</string>
     <string name="intro_resumen_pedido">Revisa los detalles del pedido y registra el pago o entrega.</string>
     <string name="label_today">Hoy</string>
+    <string name="error_fecha_hasta_anterior">La fecha Hasta no puede ser anterior a la fecha Desde</string>
+    <string name="error_fecha_desde_posterior">La fecha Desde no puede ser posterior a la fecha Hasta</string>
 </resources>
