@@ -169,15 +169,16 @@ public class PedidosFragment extends Fragment {
                     String diaActual = formatoDia.format(fecha);
                     if (!diaActual.equals(ultimoDia)) {
                         ultimoDia = diaActual;
-                        TextView header = (TextView) inflater.inflate(R.layout.item_fecha_header, listaPedidos, false);
+                        View header = inflater.inflate(R.layout.item_fecha_header, listaPedidos, false);
+                        TextView tvFecha = header.findViewById(R.id.tvFechaHeader);
                         Calendar hoy = Calendar.getInstance();
                         Calendar calPedido = Calendar.getInstance();
                         calPedido.setTime(fecha);
                         if (calPedido.get(Calendar.YEAR) == hoy.get(Calendar.YEAR) &&
                                 calPedido.get(Calendar.DAY_OF_YEAR) == hoy.get(Calendar.DAY_OF_YEAR)) {
-                            header.setText(getString(R.string.label_today));
+                            tvFecha.setText(getString(R.string.label_today));
                         } else {
-                            header.setText(formatoCabecera.format(fecha));
+                            tvFecha.setText(formatoCabecera.format(fecha));
                         }
                         listaPedidos.addView(header);
                     }
