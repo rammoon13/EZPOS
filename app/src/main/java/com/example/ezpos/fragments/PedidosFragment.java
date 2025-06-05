@@ -32,6 +32,9 @@ import com.example.ezpos.database.JsonUtils;
 import com.example.ezpos.database.Pedido;
 import com.example.ezpos.IntroHelper;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -45,6 +48,7 @@ public class PedidosFragment extends Fragment {
     private LinearLayout listaPedidos;
     private EditText buscarHistorial;
     private List<Pedido> listaCompletaPedidos = new ArrayList<>();
+    private Map<String, Double> gananciasPorDia = new HashMap<>();
 
     @Nullable
     @Override
@@ -99,6 +103,7 @@ public class PedidosFragment extends Fragment {
     private void cargarPedidosDesdeBD() {
         // Consulta los pedidos no entregados de la base de datos
         listaCompletaPedidos.clear();
+        gananciasPorDia.clear();
 
         SQLiteDatabase db = DatabaseUtils.getDatabaseHelper(requireContext()).getReadableDatabase();
         Cursor cursor = db.rawQuery("SELECT * FROM pedidos WHERE entregado = 0 ORDER BY id DESC", null);
@@ -115,6 +120,17 @@ public class PedidosFragment extends Fragment {
 
             Pedido pedido = new Pedido(id, nombreCliente, fechaHora, null, total, pagado, devolver, cambioDevuelto, entregado);
             listaCompletaPedidos.add(pedido);
+
+            try {
+                SimpleDateFormat formatoEntrada = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+                SimpleDateFormat formatoDia = new SimpleDateFormat("yyyyMMdd", Locale.getDefault());
+                Date fecha = formatoEntrada.parse(fechaHora);
+                String dia = formatoDia.format(fecha);
+                double totalDia = gananciasPorDia.getOrDefault(dia, 0.0);
+                gananciasPorDia.put(dia, totalDia + total);
+            } catch (ParseException e) {
+                // Ignorar errores de parseo para el calculo de ganancias
+            }
         }
 
         cursor.close();
@@ -171,6 +187,7 @@ public class PedidosFragment extends Fragment {
                         ultimoDia = diaActual;
                         View header = inflater.inflate(R.layout.item_fecha_header, listaPedidos, false);
                         TextView tvFecha = header.findViewById(R.id.tvFechaHeader);
+                        TextView tvGanancias = header.findViewById(R.id.tvGananciasDia);
                         Calendar hoy = Calendar.getInstance();
                         Calendar calPedido = Calendar.getInstance();
                         calPedido.setTime(fecha);
@@ -180,6 +197,8 @@ public class PedidosFragment extends Fragment {
                         } else {
                             tvFecha.setText(formatoCabecera.format(fecha));
                         }
+                        double ganancia = gananciasPorDia.getOrDefault(diaActual, 0.0);
+                        tvGanancias.setText(String.format(Locale.getDefault(), "%.2f€", ganancia));
                         listaPedidos.addView(header);
                     }
                 }
