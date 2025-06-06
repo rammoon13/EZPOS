@@ -87,6 +87,16 @@
             android:textColorHint="?attr/colorOnBackground" />
     </com.google.android.material.textfield.TextInputLayout>
 
+    <!-- Pedidos activos -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Pedidos activos"
+        android:textStyle="bold"
+        android:textSize="16sp"
+        android:paddingBottom="12dp"
+        android:textColor="?attr/colorOnBackground" />
+
     <!-- Scroll con pedidos actuales -->
     <ScrollView
         android:layout_width="match_parent"
