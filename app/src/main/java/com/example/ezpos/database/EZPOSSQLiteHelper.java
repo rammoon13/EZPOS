@@ -46,13 +46,6 @@ public class EZPOSSQLiteHelper extends SQLiteOpenHelper {
                 "FOREIGN KEY(id_pedido) REFERENCES pedidos(id), " +
                 "FOREIGN KEY(id_producto) REFERENCES productos(id));");
 
-        db.execSQL("CREATE TABLE historial (" +
-                "id INTEGER PRIMARY KEY AUTOINCREMENT," +
-                "fecha TEXT," +
-                "nombre_cliente TEXT," +
-                "total REAL," +
-                "pagado REAL," +
-                "devolver REAL);");
     }
 
     @Override
@@ -61,7 +54,6 @@ public class EZPOSSQLiteHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS productos;");
         db.execSQL("DROP TABLE IF EXISTS pedidos;");
         db.execSQL("DROP TABLE IF EXISTS detalle_pedido;");
-        db.execSQL("DROP TABLE IF EXISTS historial;");
         onCreate(db);
     }
 }
