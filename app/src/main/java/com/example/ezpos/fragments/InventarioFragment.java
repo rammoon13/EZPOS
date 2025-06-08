@@ -218,21 +218,23 @@ public class InventarioFragment extends Fragment {
         String filtro = texto.toLowerCase();
 
         for (Producto producto : listaProductos) {
-            View card = ProductoCardViewBuilder.crear(requireContext(), producto, this::mostrarProductos);
+            if (producto.getNombre().toLowerCase().contains(filtro)) {
+                View card = ProductoCardViewBuilder.crear(requireContext(), producto, this::mostrarProductos);
 
-            card.setOnClickListener(v -> {
-                Intent intent = new Intent(requireContext(), AgregarProductoActivity.class);
-                intent.putExtra("producto_id", producto.getId());
-                intent.putExtra("nombre", producto.getNombre());
-                intent.putExtra("cantidad", producto.getCantidad());
-                intent.putExtra("precio", producto.getPrecio());
-                intent.putExtra("descripcion", producto.getDescripcion());
-                intent.putExtra("imagen", producto.getImagen());
-                intent.putExtra("soloLectura", true);
-                startActivity(intent);
-            });
+                card.setOnClickListener(v -> {
+                    Intent intent = new Intent(requireContext(), AgregarProductoActivity.class);
+                    intent.putExtra("producto_id", producto.getId());
+                    intent.putExtra("nombre", producto.getNombre());
+                    intent.putExtra("cantidad", producto.getCantidad());
+                    intent.putExtra("precio", producto.getPrecio());
+                    intent.putExtra("descripcion", producto.getDescripcion());
+                    intent.putExtra("imagen", producto.getImagen());
+                    intent.putExtra("soloLectura", true);
+                    startActivity(intent);
+                });
 
-            contenedor.addView(card);
+                contenedor.addView(card);
+            }
         }
     }
 }
