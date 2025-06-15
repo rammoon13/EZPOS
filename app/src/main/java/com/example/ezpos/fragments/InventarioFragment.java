@@ -153,6 +153,10 @@ public class InventarioFragment extends Fragment {
                         try {
                             String dbName = DatabaseUtils.getNombreBaseDatos(requireContext());
                             File dbFile = requireContext().getDatabasePath(dbName);
+
+                            // Cerrar la base de datos antes de reemplazarla para evitar bloqueos
+                            DatabaseUtils.getDatabaseHelper(requireContext()).close();
+
                             InputStream in = requireContext().getContentResolver().openInputStream(uri);
                             OutputStream out = new FileOutputStream(dbFile);
                             byte[] buffer = new byte[1024];
@@ -176,7 +180,13 @@ public class InventarioFragment extends Fragment {
         // Permite escoger destino para la copia de seguridad
         Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
         intent.setType("*/*");
-        intent.putExtra(Intent.EXTRA_TITLE, "ezpos.db");
+        // Utiliza el nombre real de la base de datos para que incluya usuario y asociación
+        String dbName = DatabaseUtils.getNombreBaseDatos(requireContext());
+        intent.putExtra(Intent.EXTRA_TITLE, dbName);
+
+        // Cierra la base para asegurar que todos los datos estén escritos en disco
+        DatabaseUtils.getDatabaseHelper(requireContext()).close();
+
         exportarLauncher.launch(intent);
     }
 
