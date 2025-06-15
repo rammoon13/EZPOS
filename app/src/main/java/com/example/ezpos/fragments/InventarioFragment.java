@@ -37,7 +37,6 @@ import com.example.ezpos.IntroHelper;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
@@ -151,21 +150,8 @@ public class InventarioFragment extends Fragment {
                     if (result.getResultCode() == getActivity().RESULT_OK && result.getData() != null) {
                         Uri uri = result.getData().getData();
                         try {
-                            String dbName = DatabaseUtils.getNombreBaseDatos(requireContext());
-                            File dbFile = requireContext().getDatabasePath(dbName);
-
-                            // Cerrar la base de datos antes de reemplazarla para evitar bloqueos
-                            DatabaseUtils.getDatabaseHelper(requireContext()).close();
-
                             InputStream in = requireContext().getContentResolver().openInputStream(uri);
-                            OutputStream out = new FileOutputStream(dbFile);
-                            byte[] buffer = new byte[1024];
-                            int length;
-                            while ((length = in.read(buffer)) > 0) {
-                                out.write(buffer, 0, length);
-                            }
-                            in.close();
-                            out.close();
+                            DatabaseUtils.reemplazarBaseDatos(requireContext(), in);
                             Toast.makeText(requireContext(), "Base de datos importada correctamente", Toast.LENGTH_SHORT).show();
                             mostrarProductos();
                         } catch (Exception e) {

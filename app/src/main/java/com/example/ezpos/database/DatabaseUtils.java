@@ -6,6 +6,13 @@
 package com.example.ezpos.database;
 
 import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
+
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 public class DatabaseUtils {
 
@@ -23,5 +30,33 @@ public class DatabaseUtils {
         // Devuelve un helper configurado con el nombre calculado
         String nombreDB = getNombreBaseDatos(context);
         return new EZPOSSQLiteHelper(context, nombreDB);
+    }
+
+    /**
+     * Cierra y elimina la base de datos actual para poder reemplazarla.
+     */
+    public static void reemplazarBaseDatos(Context context, InputStream origen) throws Exception {
+        String nombreDB = getNombreBaseDatos(context);
+        File dbFile = context.getDatabasePath(nombreDB);
+
+        // Asegurar que la conexión actual esté cerrada y eliminar el archivo
+        EZPOSSQLiteHelper helper = getDatabaseHelper(context);
+        helper.close();
+        context.deleteDatabase(nombreDB);
+
+        // Copiar el nuevo contenido
+        OutputStream out = new FileOutputStream(dbFile);
+        byte[] buffer = new byte[1024];
+        int length;
+        while ((length = origen.read(buffer)) > 0) {
+            out.write(buffer, 0, length);
+        }
+        origen.close();
+        out.close();
+
+        // Ajustar la versión para evitar migraciones que borren datos
+        SQLiteDatabase db = SQLiteDatabase.openDatabase(dbFile.getPath(), null, SQLiteDatabase.OPEN_READWRITE);
+        db.setVersion(EZPOSSQLiteHelper.DB_VERSION);
+        db.close();
     }
 }
