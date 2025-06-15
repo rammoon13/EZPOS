@@ -9,11 +9,14 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class EZPOSSQLiteHelper extends SQLiteOpenHelper {
 
+    // Versión actual del esquema de la base de datos
+    public static final int DB_VERSION = 9;
+
     /**
      * Recibe el nombre de la base para cada usuario y versiona el esquema.
      */
     public EZPOSSQLiteHelper(Context context, String nombreDB) {
-        super(context, nombreDB, null, 9);
+        super(context, nombreDB, null, DB_VERSION);
     }
 
     @Override
